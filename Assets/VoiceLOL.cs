@@ -22,9 +22,8 @@ public class VoiceLOL : MonoBehaviour
     private float recordingTime = 0f;
     private const float MAX_RECORDING_TIME = 30f;
 
-    //BENS NEW VARS
+    //Key variables for pitch detection
     private AudioSource audioSource;
-
     private float smoothedPitch = 1;
     private float pitchSmoothingFactor = 1f; // Adjust for more/less smoothing
 
@@ -34,15 +33,16 @@ public class VoiceLOL : MonoBehaviour
         if (Microphone.devices.Length > 0)
         {
             microphoneDevice = Microphone.devices[0];
+            Debug.Log("Using microphone: " + microphoneDevice);
             statusText.text = "Ready to record";
         }
         else
         {
             statusText.text = "No microphone found";
+            Debug.Log("No Microphone found");
             recordButton.interactable = false;
         }
 
-        Debug.Log("WDPOADAPOKDPOKDPOD");
         // Set up button click event
         recordButton.onClick.AddListener(ToggleRecording);
 
@@ -52,7 +52,6 @@ public class VoiceLOL : MonoBehaviour
         timerText.text = "Time: 0.00s";
         isRecording = false;
 
-        Debug.Log("WDPOADAPOKDPOKDPOD111");
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
@@ -91,6 +90,8 @@ public class VoiceLOL : MonoBehaviour
 
     void StartRecording()
     {
+        Debug.Log("Starting recording...");
+
         isRecording = true;
         recordingTime = 0f;
         smoothedPitch = 0; // Reset pitch on new recording
@@ -105,6 +106,8 @@ public class VoiceLOL : MonoBehaviour
 
     void StopRecording()
     {
+        Debug.Log("Stopping recording...");
+
         isRecording = false;
 
         // Stop recording
@@ -180,6 +183,7 @@ public class VoiceLOL : MonoBehaviour
 
     void OnDestroy()
     {
+        Debug.Log("Killing microphone");
         // Clean up
         if (Microphone.IsRecording(microphoneDevice))
         {
