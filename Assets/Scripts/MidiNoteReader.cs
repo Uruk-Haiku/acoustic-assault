@@ -6,6 +6,13 @@ using System.Linq;
 
 public static class MidiNoteReader
 {
+    public struct MidiSong{
+        public string name;
+        public float length;
+        public float bpm;
+        public List<NoteData> notes;
+    }
+
     [System.Serializable]
     public struct NoteData 
     {
@@ -22,16 +29,18 @@ public static class MidiNoteReader
             this.end = end;
         }
     }
-    
+
     /// <summary>
-    /// Static method to read a MIDI file and return a list of note data
-    /// GameManager can call: var notes = MidiNoteReader.GetNotesFromMidi("song.mid");
+    /// Static method to read a MIDI file and return a complete MidiSong with all metadata
+    /// GameManager can call: var song = MidiNoteReader.LoadMidiSongFromPath("song.mid");
     /// </summary>
     /// <param name="fileName">Name of the MIDI file (without path)</param>
-    /// <returns>List of NoteData containing note number, letter, start time, and end time</returns>
-    public static List<NoteData> GetNotesFromMidi(string fileName)
+    /// <returns>MidiSong containing notes, length, BPM, and name</returns>
+    public static MidiSong LoadMidiSongFromPath(string fileName)
     {
         List<NoteData> noteDataList = new List<NoteData>();
+        float length = 0f;
+        float bpm = 120f; // Default BPM
         
         try
         {
@@ -41,6 +50,10 @@ public static class MidiNoteReader
             
             // Get tempo map for accurate time conversion
             var tempoMap = midiFile.GetTempoMap();
+            
+            // Get song metadata
+            length = (float)midiFile.GetDuration<MetricTimeSpan>().TotalSeconds;
+            bpm = (float)tempoMap.GetTempoAtTime(new MidiTimeSpan(0)).BeatsPerMinute;
             
             // Extract all notes from all tracks
             var notes = midiFile.GetNotes();
@@ -76,7 +89,25 @@ public static class MidiNoteReader
             Debug.LogError($"Error reading MIDI file '{fileName}': {e.Message}");
         }
         
-        return noteDataList;
+        return new MidiSong
+        {
+            name = fileName,
+            length = length,
+            bpm = bpm,
+            notes = noteDataList
+        };
+    }
+    
+    /// <summary>
+    /// Static method to read a MIDI file and return only the list of note data
+    /// GameManager can call: var notes = MidiNoteReader.GetNotesFromMidi("song.mid");
+    /// </summary>
+    /// <param name="fileName">Name of the MIDI file (without path)</param>
+    /// <returns>List of NoteData containing note number, letter, start time, and end time</returns>
+    public static List<NoteData> GetNotesFromMidi(string fileName)
+    {
+        // Use the main method and extract just the notes
+        return LoadMidiSongFromPath(fileName).notes;
     }
     
     /// <summary>

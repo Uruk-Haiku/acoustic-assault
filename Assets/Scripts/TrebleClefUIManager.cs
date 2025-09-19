@@ -42,7 +42,9 @@ public class TrebleClefUIManager : MonoBehaviour
 
     void Start()
     {
-        songNotes = MidiNoteReader.GetNotesFromMidi("MaryHadALittleLamb.mid");
+        MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath("MaryHadALittleLamb.mid");
+        Debug.Log($"Loaded MIDI Song: {midiSong.name}, Length: {midiSong.length}s, BPM: {midiSong.bpm}, Notes: {midiSong.notes.Count}");
+        songNotes = midiSong.notes;
         RectTransform rt = GetComponent<RectTransform>();
         float width = rt.rect.width * rt.lossyScale.x;
         float height = rt.rect.height * rt.lossyScale.y;
