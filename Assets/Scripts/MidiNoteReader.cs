@@ -165,7 +165,7 @@ public static class MidiNoteReader
     /// </summary>
     public static List<NoteData> GetNotesInTimeRange(List<NoteData> allNotes, float startTime, float endTime)
     {
-        return allNotes.Where(n => (n.start >= startTime && n.start < endTime) || (n.end >= startTime && n.end < endTime)).ToList();
+        return allNotes.Where(n => n.start < endTime && n.end > startTime).ToList();
     }
     
     /// <summary>
