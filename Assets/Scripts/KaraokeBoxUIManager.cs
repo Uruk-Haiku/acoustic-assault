@@ -5,7 +5,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
 {
     /* A class that displays midi songs on a singing UI. Default is that the UI displays 12 beats at a time. */
     public GameObject QuarterNote;
-    public GameObject MaskedEnd;
+    public GameObject FirstChild;
 
     private List<MidiNoteReader.NoteData> songNotes;
     
@@ -68,7 +68,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
             float yOffset = midiToY[note.note];
             
             GameObject noteObj = Instantiate(QuarterNote, rectTransform);
-            noteObj.transform.SetSiblingIndex(MaskedEnd.transform.GetSiblingIndex());
+            noteObj.transform.SetSiblingIndex(FirstChild.transform.GetSiblingIndex());
             RectTransform noteRectTransform = noteObj.GetComponent<RectTransform>();
             
             noteRectTransform.anchoredPosition = new Vector2(noteRectTransform.anchoredPosition.x + xStart, yOffset);
