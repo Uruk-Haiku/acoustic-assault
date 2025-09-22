@@ -42,7 +42,7 @@ public class SimpleMidiPlayer : MonoBehaviour
         try
         {
             // Read the MIDI file
-            var midiFile = MidiFile.Read($"Assets/MidiFiles/{fileName}");
+            var midiFile = MidiFile.Read($"Assets/Music/Songs/MaryHadALittleLamb/{fileName}");
             var tempoMap = midiFile.GetTempoMap();
             var notes = midiFile.GetNotes();
             

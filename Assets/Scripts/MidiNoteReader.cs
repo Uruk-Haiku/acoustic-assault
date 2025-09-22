@@ -45,7 +45,7 @@ public static class MidiNoteReader
         try
         {
             // Read the MIDI file from Assets/MidiFiles/
-            string path = $"Assets/MidiFiles/{fileName}";
+            string path = $"Assets/Music/Songs/MaryHadALittleLamb/{fileName}";
             var midiFile = MidiFile.Read(path);
             
             // Get tempo map for accurate time conversion
@@ -165,7 +165,7 @@ public static class MidiNoteReader
     /// </summary>
     public static List<NoteData> GetNotesInTimeRange(List<NoteData> allNotes, float startTime, float endTime)
     {
-        return allNotes.Where(n => n.start >= startTime && n.start < endTime).ToList();
+        return allNotes.Where(n => n.start < endTime && n.end > startTime).ToList();
     }
     
     /// <summary>
