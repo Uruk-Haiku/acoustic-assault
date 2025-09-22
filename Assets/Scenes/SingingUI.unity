@@ -625,7 +625,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 750035784}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef5274b8b9ffc49c2a80574a9b06c562, type: 3}
   m_Name: 
@@ -639,7 +639,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 750035784}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1de952b7ac3d7471c9c14dabe6113eb8, type: 3}
   m_Name: 
@@ -1131,6 +1131,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KaraokeBoxUIManager
   QuarterNote: {fileID: 3019214350187885928, guid: e2bcd6c0af5044c859c1a9a7c3118ede, type: 3}
   FirstChild: {fileID: 868956235}
+  PitchDetection: {fileID: 6196025450071984044}
+  Cursor: {fileID: 678903508}
 --- !u!1 &1904908282
 GameObject:
   m_ObjectHideFlags: 0
@@ -1221,6 +1223,116 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1904908282}
   m_CullTransparentMesh: 1
+--- !u!114 &1655086839060203956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6196025450071984044}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8226d78714b0f4c53bd1d8538cb33314, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Lasp.Runtime::Lasp.PitchVisualizerCanvas
+  _visualizerPanel: {fileID: 0}
+  _pitchBar: {fileID: 0}
+  _pitchText: {fileID: 0}
+  _noteText: {fileID: 0}
+  _confidenceSlider: {fileID: 0}
+  _gridLinePrefab: {fileID: 2211788337929098081, guid: 95ae3fb832ae74dc090a43436542e273, type: 3}
+  _logarithmicScale: 1
+  _smoothing: 0.15
+  _confidenceGradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  _pitchDetector: {fileID: 4580727898540627673}
+--- !u!4 &1985818278652371253
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6196025450071984044}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 783.7226, y: 0, z: -1168.6609}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4580727898540627673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6196025450071984044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d91bc0e2a6e014b93a41e84d6decd50c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Lasp.Runtime::Lasp.SimplePitchDetector
+  _useDefaultDevice: 0
+  _deviceID: BuiltInHeadphoneInputDevice
+  _channel: 0
+  _resolution: 2048
+  _minFrequency: 80
+  _maxFrequency: 600
+  _peakThreshold: 0.4
+  _peakNeighborhood: 3
+  _useHarmonicProduct: 0
+  _harmonicProductDepth: 3
+  _autoGain: 0
+  _gain: 0
+  _dynamicRange: 80
+  _smoothing: 0.5
+--- !u!1 &6196025450071984044
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1985818278652371253}
+  - component: {fileID: 4580727898540627673}
+  - component: {fileID: 1655086839060203956}
+  m_Layer: 0
+  m_Name: PitchDetection
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1230,3 +1342,4 @@ SceneRoots:
   - {fileID: 750035788}
   - {fileID: 1328485509}
   - {fileID: 203696230}
+  - {fileID: 1985818278652371253}
