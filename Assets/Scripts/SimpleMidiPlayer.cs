@@ -10,10 +10,14 @@ public class SimpleMidiPlayer : MonoBehaviour
     [Header("MIDI Settings")]
     [SerializeField] private string midiFileName = "your_song.mid";
     [SerializeField] private float volume = 0.5f;
-    
+
+    public DamageCalculator damageCalculator;
+
     private List<NoteEvent> noteEvents = new List<NoteEvent>();
     private Dictionary<int, AudioSource> activeNotes = new Dictionary<int, AudioSource>();
-    
+
+    [SerializeField] private bool playMusic = true;
+
     private class NoteEvent
     {
         public float time;
@@ -36,7 +40,7 @@ public class SimpleMidiPlayer : MonoBehaviour
         LoadMidiFile(midiFileName);
         StartCoroutine(PlayMidi());
     }
-    
+
     private void LoadMidiFile(string fileName)
     {
         try
@@ -120,9 +124,11 @@ public class SimpleMidiPlayer : MonoBehaviour
         audioSource.volume = volume * velocity;
         audioSource.loop = true;
         audioSource.clip = GenerateTone(frequency);
-        audioSource.Play();
+        if (playMusic)
+            audioSource.Play();
         
         activeNotes[midiNoteNumber] = audioSource;
+        SendFrequencyOfCurrentNoteNumber();
     }
     
     private void StopNote(int midiNoteNumber)
@@ -135,6 +141,7 @@ public class SimpleMidiPlayer : MonoBehaviour
             }
             activeNotes.Remove(midiNoteNumber);
         }
+        SendFrequencyOfCurrentNoteNumber();
     }
     
     private AudioClip GenerateTone(float frequency)
@@ -151,5 +158,19 @@ public class SimpleMidiPlayer : MonoBehaviour
         
         clip.SetData(data, 0);
         return clip;
+    }
+
+    private void SendFrequencyOfCurrentNoteNumber()
+    {
+        // if no notes are active, set target frequency to 0 and does not give score
+        if (activeNotes.Count == 0)
+        {
+            damageCalculator.SetTargetFrequency(0f);
+            return;
+        }
+          
+        int currentNoteNumber = activeNotes.Keys.FirstOrDefault();
+        //Debug.Log($"Current Note Number: {currentNoteNumber}");
+        damageCalculator.SetTargetFrequency(440f * Mathf.Pow(2f, (currentNoteNumber - 69f) / 12f));
     }
 }
