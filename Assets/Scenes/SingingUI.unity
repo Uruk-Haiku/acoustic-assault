@@ -153,11 +153,11 @@ MonoBehaviour:
   damageSlider: {fileID: 1613350092}
   healthSlider: {fileID: 1345514319}
   damageButton: {fileID: 1997313636}
-  frequencyToleranceFactor: 2
   applyLoundness: 1
-  loudnessFactor: 2
+  loudnessMultiplier: 2
   minLoudnessDb: -80
   maxLoudnessDb: -20
+  frequencyToleranceFactor: 2
   timeLength: 15
   damageCalculationInterval: 0.05
 --- !u!4 &51320850
@@ -803,6 +803,7 @@ MonoBehaviour:
   midiFileName: MaryHadALittleLamb.mid
   volume: 10
   damageCalculator: {fileID: 51320849}
+  playMusic: 1
 --- !u!114 &750035786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2024,7 +2025,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Lasp.Runtime::Lasp.SimplePitchDetector
   _useDefaultDevice: 0
-  _deviceID: '{0.0.1.00000000}.{92097d28-b5a6-4b0c-8dba-d819ad79440f}'
+  _deviceID: '{0.0.1.00000000}.{cb7246f2-630f-47e7-9dca-c0406d76d386}'
   _channel: 0
   _resolution: 2048
   _minFrequency: 80

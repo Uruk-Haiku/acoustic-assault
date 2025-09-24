@@ -15,7 +15,9 @@ public class SimpleMidiPlayer : MonoBehaviour
 
     private List<NoteEvent> noteEvents = new List<NoteEvent>();
     private Dictionary<int, AudioSource> activeNotes = new Dictionary<int, AudioSource>();
-    
+
+    [SerializeField] private bool playMusic = true;
+
     private class NoteEvent
     {
         public float time;
@@ -122,7 +124,8 @@ public class SimpleMidiPlayer : MonoBehaviour
         audioSource.volume = volume * velocity;
         audioSource.loop = true;
         audioSource.clip = GenerateTone(frequency);
-        audioSource.Play();
+        if (playMusic)
+            audioSource.Play();
         
         activeNotes[midiNoteNumber] = audioSource;
         SendFrequencyOfCurrentNoteNumber();
