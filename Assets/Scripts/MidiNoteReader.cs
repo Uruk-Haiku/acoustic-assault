@@ -45,7 +45,7 @@ public static class MidiNoteReader
         try
         {
             // Read the MIDI file from Assets/MidiFiles/
-            string path = $"Assets/Music/Songs/MaryHadALittleLamb/{fileName}";
+            string path = $"Assets/Resources/Music/Songs/{fileName}";
             var midiFile = MidiFile.Read(path);
             
             // Get tempo map for accurate time conversion
@@ -188,5 +188,17 @@ public static class MidiNoteReader
             var n = notes[i];
             Debug.Log($"  [{i}] {n.letter} (MIDI #{n.note}) | Start: {n.start:F3}s | End: {n.end:F3}s | Duration: {(n.end - n.start):F3}s");
         }
+    }
+    
+    /// <summary>
+    /// Get the lowest and highest MIDI note numbers from a list of notes.
+    /// Returns (lowest, highest) as a tuple.
+    /// </summary>
+    public static (int lowest, int highest) GetNoteRange(List<NoteData> notes)
+    {
+        int lowest = notes.Min(n => n.note);
+        int highest = notes.Max(n => n.note);
+
+        return (lowest, highest);
     }
 }
