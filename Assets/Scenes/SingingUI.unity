@@ -155,6 +155,7 @@ MonoBehaviour:
   healthSlider1: {fileID: 1345514319}
   healthSlider2: {fileID: 1044529901}
   damageButton: {fileID: 1997313636}
+  winText: {fileID: 329124134}
   applyLoundness: 1
   loudnessMultiplier: 2
   minLoudnessDb: -80
@@ -165,6 +166,7 @@ MonoBehaviour:
   - 4
   - 8
   - 12
+  - 16
   damageCalculationInterval: 0.05
 --- !u!4 &51320850
 Transform:

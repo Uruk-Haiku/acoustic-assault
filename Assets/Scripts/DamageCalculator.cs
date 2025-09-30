@@ -17,6 +17,8 @@ public class DamageCalculator : MonoBehaviour
     public UnityEngine.UI.Slider healthSlider2;
     // Button that does damage when pressed
     public UnityEngine.UI.Button damageButton;
+    // Text element to show win message
+    public TextMeshProUGUI winText;
 
     [Header("Loudness Settings")]
     // Whether to use loudness as a multiplier for damage
@@ -30,6 +32,8 @@ public class DamageCalculator : MonoBehaviour
     [Header("Parameters")]
     // Tolerance factor for frequency matching, the higher the more tolerance
     [SerializeField] private float frequencyToleranceFactor = 2.0f;
+    // Multiplier of maximum damage
+    [SerializeField] private float maxDamageMultiplier = 1.0f;
 
     // Total time length of the song in seconds
     [SerializeField] private float timeLength = 15.0f;
@@ -50,14 +54,16 @@ public class DamageCalculator : MonoBehaviour
     // Frequency of the note that is playing
     private float currentTargetFrequency = 0f;
 
+    private bool gameEnded = false;
+
     void Awake()
     {
         // Calculate theoretical maximum damage: timelength * Coroutine calls per second * max damage per frame (100)
         // If loudness is applied, multiply by loudness multiplier
         if (applyLoundness)
-            MaximumDamage = timeLength * (1 / damageCalculationInterval) * 100f * loudnessMultiplier;
+            MaximumDamage = timeLength * (1 / damageCalculationInterval) * 100f * loudnessMultiplier * maxDamageMultiplier;
         else
-            MaximumDamage = timeLength * (1 / damageCalculationInterval) * 100f;
+            MaximumDamage = timeLength * (1 / damageCalculationInterval) * 100f * maxDamageMultiplier;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -67,6 +73,8 @@ public class DamageCalculator : MonoBehaviour
         damageSlider2.value = 0f;
         currentDamageSlider = damageSlider1;
         songTime = 0f;
+        Player1Singing = true;
+        gameEnded = false;
         StartCoroutine(DamageRoutine());
     }
 
@@ -86,6 +94,7 @@ public class DamageCalculator : MonoBehaviour
             }
             else
             {
+                CheckWinning(); // Check if there's a winner before applying damage
                 DoDamageToPlayer1();
                 damageAccumulated2 = 0f;
                 damageSlider2.value = 0f;
@@ -99,9 +108,9 @@ public class DamageCalculator : MonoBehaviour
             currentTimestampIndex++;
             // Switch player
             Player1Singing = !Player1Singing;
-            if (healthSlider1.value <= 0f)
+            if (currentTimestampIndex == timeStamps.Length)
             {
-                Debug.Log("Player 2 Wins!");
+                TimeOut();
             }
         }
     }
@@ -163,15 +172,78 @@ public class DamageCalculator : MonoBehaviour
         return damage * normalizedLoudness * loudnessMultiplier;
     }
 
-    public void DoDamageToPlayer1()
+    private void DoDamageToPlayer1()
     {
         // Apply damage to health slider based on damage slider value, more detailed formula can be applied here
         healthSlider1.value = Mathf.Max(0f, healthSlider1.value - damageSlider2.value);
     }
 
-    public void DoDamageToPlayer2()
+    private void DoDamageToPlayer2()
     {
         // Apply damage to health slider based on damage slider value, more detailed formula can be applied here
         healthSlider2.value = Mathf.Max(0f, healthSlider2.value - damageSlider1.value);
+    }
+
+    private void CheckWinning()
+    {
+        if (healthSlider1.value <= damageSlider2.value && healthSlider2.value <= damageSlider1.value)
+        {
+            if (damageSlider1.value > damageSlider2.value)
+            {
+                ShowWinningMessage(1);
+            }
+            else if (damageSlider2.value > damageSlider1.value)
+            {
+                ShowWinningMessage(2);
+            }
+            else
+            {
+                ShowWinningMessage(0); // Draw
+            }
+        }
+        else if (healthSlider1.value <= damageSlider2.value)
+        {
+            ShowWinningMessage(2);
+        }
+        else if (healthSlider2.value <= damageSlider1.value)
+        {
+            ShowWinningMessage(1);
+        }
+    }
+
+    private void TimeOut()
+    {
+        if (gameEnded) return;
+        if (healthSlider1.value > healthSlider2.value)
+        {
+            ShowWinningMessage(1);
+        }
+        else if (healthSlider2.value > healthSlider1.value)
+        {
+            ShowWinningMessage(2);
+        }
+        else
+        {
+            ShowWinningMessage(0); // Draw
+        }
+    }
+
+    public void ShowWinningMessage(int winningPlayer)
+    {
+        switch(winningPlayer)
+        {
+            case 0:
+                winText.text = "It's a Draw!";
+                gameEnded = true;
+                break;
+            case 1:
+                winText.text = "Player 1 Wins!";
+                gameEnded = true;
+                break;
+            case 2:
+                winText.text = "Player 2 Wins!";
+                gameEnded = true;
+                break;
+        }
     }
 }
