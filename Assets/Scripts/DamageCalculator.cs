@@ -1,6 +1,7 @@
 using Lasp;
 using System.Collections;
 using UnityEngine;
+using TMPro;
 
 public class DamageCalculator : MonoBehaviour
 {
@@ -8,9 +9,12 @@ public class DamageCalculator : MonoBehaviour
     public SimplePitchDetector pitchDetector;
     public SimpleMidiPlayer midiPlayer;
     // Damage Slider UI element to show damage
-    public UnityEngine.UI.Slider damageSlider;
+    public UnityEngine.UI.Slider damageSlider1;
+    public UnityEngine.UI.Slider damageSlider2;
+    private UnityEngine.UI.Slider currentDamageSlider;
     // Health Slider UI element to show health
-    public UnityEngine.UI.Slider healthSlider;
+    public UnityEngine.UI.Slider healthSlider1;
+    public UnityEngine.UI.Slider healthSlider2;
     // Button that does damage when pressed
     public UnityEngine.UI.Button damageButton;
 
@@ -29,10 +33,16 @@ public class DamageCalculator : MonoBehaviour
 
     // Total time length of the song in seconds
     [SerializeField] private float timeLength = 15.0f;
+    [SerializeField] private float[] timeStamps;
+    private int currentTimestampIndex = 0;
+    private bool Player1Singing;
+    private float songTime = 0f;
+
 
     private float MaximumDamage;
 
-    private float damageAccumulated = 0f;
+    private float damageAccumulated1 = 0f;
+    private float damageAccumulated2 = 0f;
 
     // How often to calculate damage (in seconds)
     [SerializeField] private float damageCalculationInterval = 0.05f;
@@ -53,27 +63,69 @@ public class DamageCalculator : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        damageSlider.value = 0f;
+        damageSlider1.value = 0f;
+        damageSlider2.value = 0f;
+        currentDamageSlider = damageSlider1;
+        songTime = 0f;
         StartCoroutine(DamageRoutine());
-        damageButton.onClick.AddListener(DoDamage);
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Track song playback time
+        songTime += Time.deltaTime;
 
+        // Check if it's time to apply damage
+        if (currentTimestampIndex < timeStamps.Length &&
+            songTime >= timeStamps[currentTimestampIndex])
+        {
+            if (Player1Singing)
+            {
+                currentDamageSlider = damageSlider2;
+            }
+            else
+            {
+                DoDamageToPlayer1();
+                damageAccumulated2 = 0f;
+                damageSlider2.value = 0f;
+
+                DoDamageToPlayer2();
+                damageAccumulated1 = 0f; // Reset accumulated damage for next round
+                damageSlider1.value = 0f; // Reset the slider for the next round
+                currentDamageSlider = damageSlider1;
+            }
+            // Advance to the next timestamp
+            currentTimestampIndex++;
+            // Switch player
+            Player1Singing = !Player1Singing;
+            if (healthSlider1.value <= 0f)
+            {
+                Debug.Log("Player 2 Wins!");
+            }
+        }
     }
     private IEnumerator DamageRoutine()
     {
         while (true)
         {
             // Prevent bug that breaks slider UI at start of game
-            if (damageSlider.value == float.NaN)
-                damageSlider.value = 0f;
+            if (currentDamageSlider.value == float.NaN)
+                currentDamageSlider.value = 0f;
+            if (Player1Singing)
+            {
             // Calculate accumulated damage and visualize using the slider
-            damageAccumulated += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.pitch), pitchDetector.loudness);
+            damageAccumulated1 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.pitch), pitchDetector.loudness);
             //Debug.Log(damageAccumulated);
-            damageSlider.value = Mathf.Max(0, damageAccumulated / MaximumDamage);
+            currentDamageSlider.value = Mathf.Max(0, damageAccumulated1 / MaximumDamage);
+            }
+            else
+            {
+                // Calculate accumulated damage and visualize using the slider
+                damageAccumulated2 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.pitch), pitchDetector.loudness);
+                //Debug.Log(damageAccumulated);
+                currentDamageSlider.value = Mathf.Max(0, damageAccumulated2 / MaximumDamage);
+            }
             yield return new WaitForSeconds(damageCalculationInterval);
         }
     }
@@ -111,9 +163,15 @@ public class DamageCalculator : MonoBehaviour
         return damage * normalizedLoudness * loudnessMultiplier;
     }
 
-    public void DoDamage()
+    public void DoDamageToPlayer1()
     {
         // Apply damage to health slider based on damage slider value, more detailed formula can be applied here
-        healthSlider.value = Mathf.Max(0f, healthSlider.value - damageSlider.value);
+        healthSlider1.value = Mathf.Max(0f, healthSlider1.value - damageSlider2.value);
+    }
+
+    public void DoDamageToPlayer2()
+    {
+        // Apply damage to health slider based on damage slider value, more detailed formula can be applied here
+        healthSlider2.value = Mathf.Max(0f, healthSlider2.value - damageSlider1.value);
     }
 }
