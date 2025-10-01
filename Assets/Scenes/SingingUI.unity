@@ -161,6 +161,7 @@ MonoBehaviour:
   minLoudnessDb: -80
   maxLoudnessDb: -20
   frequencyToleranceFactor: 2
+  maxDamageMultiplier: 1
   timeLength: 15
   timeStamps:
   - 4
@@ -425,7 +426,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2180,7 +2181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Lasp.Runtime::Lasp.SimplePitchDetector
   _useDefaultDevice: 0
-  _deviceID: '{0.0.1.00000000}.{92097d28-b5a6-4b0c-8dba-d819ad79440f}'
+  _deviceID: '{0.0.1.00000000}.{fc23f248-ea10-4d2b-b8e3-5e292311d193}'
   _channel: 0
   _resolution: 2048
   _minFrequency: 80
