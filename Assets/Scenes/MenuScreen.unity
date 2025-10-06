@@ -1747,6 +1747,8 @@ MonoBehaviour:
   selectLevelButton: {fileID: 1815895655}
   quitButton: {fileID: 791171626}
   backButton: {fileID: 2119294785}
+  level1Button: {fileID: 1452366536}
+  level1SceneName: SingingUI
 --- !u!1 &1617546858
 GameObject:
   m_ObjectHideFlags: 0
