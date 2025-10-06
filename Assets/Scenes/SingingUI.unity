@@ -150,15 +150,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DamageCalculator
   pitchDetector: {fileID: 4580727898540627673}
   midiPlayer: {fileID: 0}
-  damageSlider: {fileID: 1613350092}
-  healthSlider: {fileID: 1345514319}
+  damageSlider1: {fileID: 0}
+  damageSlider2: {fileID: 0}
+  healthSlider1: {fileID: 0}
+  healthSlider2: {fileID: 0}
   damageButton: {fileID: 1997313636}
+  winText: {fileID: 0}
   applyLoundness: 1
   loudnessMultiplier: 2
   minLoudnessDb: -80
   maxLoudnessDb: -20
   frequencyToleranceFactor: 2
+  maxDamageMultiplier: 1
   timeLength: 15
+  timeStamps: []
   damageCalculationInterval: 0.05
 --- !u!4 &51320850
 Transform:
@@ -1569,17 +1574,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1418376786}
   m_CullTransparentMesh: 1
---- !u!114 &1613350092 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1349575198693445348, guid: da21623885621dc4fb7f115ff4987d9a, type: 3}
-  m_PrefabInstance: {fileID: 7623420707578962916}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
 --- !u!224 &1613350093 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5616315523060495791, guid: da21623885621dc4fb7f115ff4987d9a, type: 3}
@@ -2402,7 +2396,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Lasp.Runtime::Lasp.SimplePitchDetector
   _useDefaultDevice: 0
-  _deviceID: BuiltInMicrophoneDevice
+  _deviceID: '{0.0.1.00000000}.{da17a1c4-7bc9-418f-bb2e-61b848d33a24}'
   _channel: 0
   _resolution: 2048
   _minFrequency: 80
