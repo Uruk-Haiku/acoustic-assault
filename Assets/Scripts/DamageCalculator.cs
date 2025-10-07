@@ -7,7 +7,7 @@ public class DamageCalculator : MonoBehaviour
 {
     [Header("GameObjects References")]
     public SimplePitchDetector pitchDetector;
-    public SimpleMidiPlayer midiPlayer;
+    //public SimpleMidiPlayer midiPlayer;
     // Damage Slider UI element to show damage
     public UnityEngine.UI.Slider damageSlider1;
     public UnityEngine.UI.Slider damageSlider2;
