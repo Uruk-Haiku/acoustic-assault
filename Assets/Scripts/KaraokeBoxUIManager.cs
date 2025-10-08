@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Lasp;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class KaraokeBoxUIManager : MonoBehaviour
 {
@@ -28,6 +29,13 @@ public class KaraokeBoxUIManager : MonoBehaviour
     private List<GameObject> instantiatedNotes = new List<GameObject>();
 
     private Dictionary<int, float> midiToY = new Dictionary<int, float>();
+    
+    private Dictionary<int, Color> playerColors = new Dictionary<int, Color>
+    {
+        {0, Color.white},
+        {1, Color.red},
+        {2, Color.blue},
+    };
 
     // Natural notes are spaced 1 step apart, sharps are halfway
     private readonly Dictionary<int, float> noteOffsets = new Dictionary<int, float>
@@ -199,6 +207,8 @@ public class KaraokeBoxUIManager : MonoBehaviour
             float yOffset = midiToY[note.note];
 
             GameObject noteObj = Instantiate(QuarterNote, rectTransform);
+            int currentPlayer = SongManager.Instance.GetPlayerFromTime(note.start);
+            noteObj.GetComponent<Image>().color = playerColors[currentPlayer];
             noteObj.transform.SetSiblingIndex(FirstChild.transform.GetSiblingIndex());
 
             // TODO in future pre-instantiate quarter notes for efficiency
@@ -233,7 +243,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
     void UpdateDamage()
     {
-        MidiNoteReader.NoteData? note = MidiNoteReader.GetNoteAtTime(songNotes, currSongTime);
+        MidiNoteReader.NoteData? note = MidiNoteReader.GetNoteAtTime(songNotes, currSongTime + 0.29f * barDuration);
         if (note != null)
         {
             damageCalculator.SetTargetFrequency(440f * Mathf.Pow(2f, (note.Value.note - 69f) / 12f));
@@ -248,9 +258,9 @@ public class KaraokeBoxUIManager : MonoBehaviour
     public void StartPlaying(MidiNoteReader.MidiSong midiSong, float timeBeforeSongStarts)
     {
         bpm = midiSong.bpm;
-        currSongTime = timeBeforeSongStarts;
         isPlaying = true;
         currSongLength = midiSong.length;
         barDuration = 60.0f / bpm * 12f;
+        currSongTime = timeBeforeSongStarts - 0.29f * barDuration;
     }
 }

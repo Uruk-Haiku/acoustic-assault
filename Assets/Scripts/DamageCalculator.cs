@@ -56,6 +56,8 @@ public class DamageCalculator : MonoBehaviour
 
     private bool gameEnded = false;
 
+    private bool startRecording = false;
+
     void Awake()
     {
         // Calculate theoretical maximum damage: timelength * Coroutine calls per second * max damage per frame (100)
@@ -75,44 +77,45 @@ public class DamageCalculator : MonoBehaviour
         songTime = 0f;
         Player1Singing = true;
         gameEnded = false;
+    }
+
+    public void StartRecordingDamage(float startSongTime)
+    {
         StartCoroutine(DamageRoutine());
+        startRecording = true;
+        songTime = startSongTime;
+    }
+
+    public void SwitchPlayer()
+    {
+        if (Player1Singing)
+        {
+            currentDamageSlider = damageSlider2;
+        }
+        else
+        {
+            CheckWinning(); // Check if there's a winner before applying damage
+            DoDamageToPlayer1();
+            damageAccumulated2 = 0f;
+            damageSlider2.value = 0f;
+
+            DoDamageToPlayer2();
+            damageAccumulated1 = 0f; // Reset accumulated damage for next round
+            damageSlider1.value = 0f; // Reset the slider for the next round
+            currentDamageSlider = damageSlider1;
+        }
+        Player1Singing = !Player1Singing;
     }
 
     // Update is called once per frame
     void Update()
     {
         // Track song playback time
-        songTime += Time.deltaTime;
-
-        // Check if it's time to apply damage
-        if (currentTimestampIndex < timeStamps.Length &&
-            songTime >= timeStamps[currentTimestampIndex])
+        if (!startRecording)
         {
-            if (Player1Singing)
-            {
-                currentDamageSlider = damageSlider2;
-            }
-            else
-            {
-                CheckWinning(); // Check if there's a winner before applying damage
-                DoDamageToPlayer1();
-                damageAccumulated2 = 0f;
-                damageSlider2.value = 0f;
-
-                DoDamageToPlayer2();
-                damageAccumulated1 = 0f; // Reset accumulated damage for next round
-                damageSlider1.value = 0f; // Reset the slider for the next round
-                currentDamageSlider = damageSlider1;
-            }
-            // Advance to the next timestamp
-            currentTimestampIndex++;
-            // Switch player
-            Player1Singing = !Player1Singing;
-            if (currentTimestampIndex == timeStamps.Length)
-            {
-                TimeOut();
-            }
+            return;
         }
+        songTime += Time.deltaTime;
     }
     private IEnumerator DamageRoutine()
     {
@@ -175,13 +178,13 @@ public class DamageCalculator : MonoBehaviour
     private void DoDamageToPlayer1()
     {
         // Apply damage to health slider based on damage slider value, more detailed formula can be applied here
-        healthSlider1.value = Mathf.Max(0f, healthSlider1.value - damageSlider2.value);
+        healthSlider1.value = Mathf.Max(0f, healthSlider1.value - damageSlider2.value * 0.1f);
     }
 
     private void DoDamageToPlayer2()
     {
         // Apply damage to health slider based on damage slider value, more detailed formula can be applied here
-        healthSlider2.value = Mathf.Max(0f, healthSlider2.value - damageSlider1.value);
+        healthSlider2.value = Mathf.Max(0f, healthSlider2.value - damageSlider1.value * 0.1f);
     }
 
     private void CheckWinning()
@@ -211,7 +214,7 @@ public class DamageCalculator : MonoBehaviour
         }
     }
 
-    private void TimeOut()
+    public void EndGame()
     {
         if (gameEnded) return;
         if (healthSlider1.value > healthSlider2.value)

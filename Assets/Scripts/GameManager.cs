@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -18,6 +19,29 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    public void StartGame()
+    {
+        GameObject canvasObj = GameObject.Find("Canvas");
+        GameObject startScreen = GameObject.Find("StartScreen");
+        CanvasGroup canvasGroup = canvasObj.GetComponent<CanvasGroup>();
+        startScreen.SetActive(false);
+        if (canvasGroup != null)
+        {
+            StartCoroutine(EaseInCanvas(canvasGroup));
+        }
+    }
+
+    IEnumerator EaseInCanvas(CanvasGroup canvasGroup)
+    {
+        float timer = 0;
+        while (timer < 5f)
+        {
+            canvasGroup.alpha = Mathf.Max(0f, (timer - 2f) / 3f);
+            timer += Time.deltaTime;
+            yield return null;
+        }
     }
 
     // Load any scene by name
