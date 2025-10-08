@@ -3436,7 +3436,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d91bc0e2a6e014b93a41e84d6decd50c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Lasp.Runtime::Lasp.SimplePitchDetector
-  _useDefaultDevice: 0
+  _useDefaultDevice: 1
   _deviceID: '{0.0.1.00000000}.{da17a1c4-7bc9-418f-bb2e-61b848d33a24}'
   _channel: 0
   _resolution: 2048
