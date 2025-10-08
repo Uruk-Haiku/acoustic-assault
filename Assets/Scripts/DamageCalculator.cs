@@ -178,13 +178,13 @@ public class DamageCalculator : MonoBehaviour
     private void DoDamageToPlayer1()
     {
         // Apply damage to health slider based on damage slider value, more detailed formula can be applied here
-        healthSlider1.value = Mathf.Max(0f, healthSlider1.value - damageSlider2.value * 0.1f);
+        healthSlider1.value = Mathf.Max(0f, healthSlider1.value - damageSlider2.value * 0.3f);
     }
 
     private void DoDamageToPlayer2()
     {
         // Apply damage to health slider based on damage slider value, more detailed formula can be applied here
-        healthSlider2.value = Mathf.Max(0f, healthSlider2.value - damageSlider1.value * 0.1f);
+        healthSlider2.value = Mathf.Max(0f, healthSlider2.value - damageSlider1.value * 0.3f);
     }
 
     private void CheckWinning()
