@@ -96,4 +96,9 @@ public class SongManager : MonoBehaviour
             audioSourceBackingTrack.PlayDelayed(timeBeforeSongStarts);
         }
     }
+
+    public void EndSong()
+    {
+        audioSourceBackingTrack.Stop();
+    }
 }

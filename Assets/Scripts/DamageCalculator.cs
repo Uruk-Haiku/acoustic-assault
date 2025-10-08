@@ -248,5 +248,14 @@ public class DamageCalculator : MonoBehaviour
                 gameEnded = true;
                 break;
         }
+
+        StartCoroutine(ExitToMainMenu());
+    }
+
+    IEnumerator ExitToMainMenu()
+    {
+        yield return new WaitForSeconds(5);
+        SongManager.Instance.EndSong();
+        GameManager.Instance.LoadScene("MenuScreen");
     }
 }
