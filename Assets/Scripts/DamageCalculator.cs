@@ -189,7 +189,7 @@ public class DamageCalculator : MonoBehaviour
 
     private void CheckWinning()
     {
-        if (healthSlider1.value <= damageSlider2.value && healthSlider2.value <= damageSlider1.value)
+        if (healthSlider1.value <= (damageSlider2.value * 0.3f) && healthSlider2.value <= (damageSlider1.value * 0.3f))
         {
             if (damageSlider1.value > damageSlider2.value)
             {
@@ -204,11 +204,11 @@ public class DamageCalculator : MonoBehaviour
                 ShowWinningMessage(0); // Draw
             }
         }
-        else if (healthSlider1.value <= damageSlider2.value)
+        else if (healthSlider1.value <= (damageSlider2.value * 0.3f))
         {
             ShowWinningMessage(2);
         }
-        else if (healthSlider2.value <= damageSlider1.value)
+        else if (healthSlider2.value <= (damageSlider1.value * 0.3f))
         {
             ShowWinningMessage(1);
         }
