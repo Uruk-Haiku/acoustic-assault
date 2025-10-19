@@ -256,6 +256,6 @@ public class DamageCalculator : MonoBehaviour
     {
         yield return new WaitForSeconds(5);
         SongManager.Instance.EndSong();
-        GameManager.Instance.LoadScene("MenuScreen");
+        GameManager.LoadScene("MenuScreen");
     }
 }

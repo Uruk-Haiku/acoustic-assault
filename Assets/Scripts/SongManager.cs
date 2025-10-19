@@ -101,4 +101,17 @@ public class SongManager : MonoBehaviour
     {
         audioSourceBackingTrack.Stop();
     }
+
+    public void PauseSong()
+    {
+        isPlayingSong = false;
+        audioSourceBackingTrack.Pause();
+        Time.timeScale = 0f;
+    }
+    public void UnPauseSong()
+    {
+        isPlayingSong = true;
+        audioSourceBackingTrack.Play();
+        Time.timeScale = 1f;
+    }
 }
