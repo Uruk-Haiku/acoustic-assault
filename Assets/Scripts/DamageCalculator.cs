@@ -48,8 +48,17 @@ public class DamageCalculator : MonoBehaviour
     private float damageAccumulated1 = 0f;
     private float damageAccumulated2 = 0f;
 
+    private float totalDamage1 = 0f;
+    private float totalDamage2 = 0f;
+
+    private float currentHealth1 = 1.00f;
+    private float currentHealth2 = 1.0f;
+
     // How often to calculate damage (in seconds)
     [SerializeField] private float damageCalculationInterval = 0.05f;
+
+    // Multiplier to apply to damage effect on health
+    [SerializeField] private float damageEffectMultiplier = 0.3f;
 
     // Frequency of the note that is playing
     private float currentTargetFrequency = 0f;
@@ -71,9 +80,9 @@ public class DamageCalculator : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        damageSlider1.value = 0f;
-        damageSlider2.value = 0f;
-        currentDamageSlider = damageSlider1;
+        damageSlider1.value = 1.0f;
+        damageSlider2.value = 1.0f;
+        currentDamageSlider = damageSlider2;
         songTime = 0f;
         Player1Singing = true;
         gameEnded = false;
@@ -90,19 +99,19 @@ public class DamageCalculator : MonoBehaviour
     {
         if (Player1Singing)
         {
-            currentDamageSlider = damageSlider2;
+            currentDamageSlider = damageSlider1;
         }
         else
         {
             CheckWinning(); // Check if there's a winner before applying damage
             DoDamageToPlayer1();
+            totalDamage2 += damageAccumulated2;
             damageAccumulated2 = 0f;
-            damageSlider2.value = 0f;
 
             DoDamageToPlayer2();
+            totalDamage1 += damageAccumulated1;
             damageAccumulated1 = 0f; // Reset accumulated damage for next round
-            damageSlider1.value = 0f; // Reset the slider for the next round
-            currentDamageSlider = damageSlider1;
+            currentDamageSlider = damageSlider2;
         }
         Player1Singing = !Player1Singing;
     }
@@ -123,20 +132,22 @@ public class DamageCalculator : MonoBehaviour
         {
             // Prevent bug that breaks slider UI at start of game
             if (currentDamageSlider.value == float.NaN)
-                currentDamageSlider.value = 0f;
+                currentDamageSlider.value = 1.0f;
             if (Player1Singing)
             {
-            // Calculate accumulated damage and visualize using the slider
-            damageAccumulated1 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.pitch), pitchDetector.loudness);
-            //Debug.Log(damageAccumulated);
-            currentDamageSlider.value = Mathf.Max(0, damageAccumulated1 / MaximumDamage);
+                // Calculate accumulated damage and visualize using the slider
+                damageAccumulated1 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.pitch), pitchDetector.loudness);
+                //Debug.Log(damageAccumulated);
+                currentDamageSlider.value = Mathf.Max(0, (currentHealth2 - ((totalDamage1 + damageAccumulated1) / MaximumDamage) * damageEffectMultiplier));
+                //currentHealth2 = currentDamageSlider.value;
             }
             else
             {
                 // Calculate accumulated damage and visualize using the slider
                 damageAccumulated2 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.pitch), pitchDetector.loudness);
                 //Debug.Log(damageAccumulated);
-                currentDamageSlider.value = Mathf.Max(0, damageAccumulated2 / MaximumDamage);
+                currentDamageSlider.value = Mathf.Max(0, (currentHealth1 - ((totalDamage2 + damageAccumulated2) / MaximumDamage) * damageEffectMultiplier));
+                //currentHealth1 = currentDamageSlider.value;
             }
             yield return new WaitForSeconds(damageCalculationInterval);
         }
@@ -147,6 +158,7 @@ public class DamageCalculator : MonoBehaviour
         currentTargetFrequency = targetFrequency;
     }
 
+    #region Damage Calculation
     private float CalculateDamage(float playerFrequency)
     {
         if (currentTargetFrequency == 0f)
@@ -174,28 +186,29 @@ public class DamageCalculator : MonoBehaviour
         // Debug.Log("NormalizedLoudness: " + normalizedLoudness);
         return damage * normalizedLoudness * loudnessMultiplier;
     }
+    #endregion
 
     private void DoDamageToPlayer1()
     {
         // Apply damage to health slider based on damage slider value, more detailed formula can be applied here
-        healthSlider1.value = Mathf.Max(0f, healthSlider1.value - damageSlider2.value * 0.3f);
+        healthSlider1.value = Mathf.Max(0f, damageSlider1.value);
     }
 
     private void DoDamageToPlayer2()
     {
         // Apply damage to health slider based on damage slider value, more detailed formula can be applied here
-        healthSlider2.value = Mathf.Max(0f, healthSlider2.value - damageSlider1.value * 0.3f);
+        healthSlider2.value = Mathf.Max(0f, damageSlider2.value);
     }
 
     private void CheckWinning()
     {
-        if (healthSlider1.value <= (damageSlider2.value * 0.3f) && healthSlider2.value <= (damageSlider1.value * 0.3f))
+        if (damageSlider1.value <= 0 && damageSlider2.value <= 0)
         {
-            if (damageSlider1.value > damageSlider2.value)
+            if (damageAccumulated1 > damageAccumulated2)
             {
                 ShowWinningMessage(1);
             }
-            else if (damageSlider2.value > damageSlider1.value)
+            else if (damageAccumulated2 > damageAccumulated1)
             {
                 ShowWinningMessage(2);
             }
@@ -204,11 +217,11 @@ public class DamageCalculator : MonoBehaviour
                 ShowWinningMessage(0); // Draw
             }
         }
-        else if (healthSlider1.value <= (damageSlider2.value * 0.3f))
+        else if (damageSlider1.value <= 0)
         {
             ShowWinningMessage(2);
         }
-        else if (healthSlider2.value <= (damageSlider1.value * 0.3f))
+        else if (damageSlider2.value <= 0)
         {
             ShowWinningMessage(1);
         }
