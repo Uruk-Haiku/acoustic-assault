@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
     public GameObject mainMenuPanel;
     public GameObject selectLevelPanel;
+    [SerializeField] private GameObject firstSelectedButton_MainMenu;
+    [SerializeField] private GameObject firstSelectedButton_SelectLevel;
 
     public Button selectLevelButton;
     public Button quitButton;
@@ -32,5 +35,20 @@ public class MenuManager : MonoBehaviour
         selectLevelPanel.SetActive(false);
 
         panelToShow.SetActive(true);
+        StartCoroutine(SetSelectedNextFrame(panelToShow));
+    }
+
+    System.Collections.IEnumerator SetSelectedNextFrame(GameObject panelToShow)
+    {
+        // Wait one frame so Unity updates UI activation states
+        yield return null;
+
+        GameObject target = panelToShow == selectLevelPanel
+            ? firstSelectedButton_SelectLevel
+            : firstSelectedButton_MainMenu;
+
+        EventSystem.current.SetSelectedGameObject(null); // Clear first to avoid sticking
+        EventSystem.current.SetSelectedGameObject(target);
+        Debug.Log("Selected button is now: " + EventSystem.current.currentSelectedGameObject.name);
     }
 }
