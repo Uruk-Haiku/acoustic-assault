@@ -8,12 +8,11 @@ public class KaraokeBoxUIManager : MonoBehaviour
     /* A class that displays midi songs on a singing UI. Default is that the UI displays 12 beats at a time. */
     public GameObject QuarterNote;
     public GameObject FirstChild;
-    public GameObject PitchDetection;
     public GameObject Cursor;
     public DamageCalculator damageCalculator;
 
     private List<MidiNoteReader.NoteData> songNotes;
-    private SimplePitchDetector pitchDetector;
+    public SimplePitchDetector pitchDetector;
     private RectTransform rectTransform;
     private RectTransform cursorRectTransform;
 
@@ -154,7 +153,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
     void Start()
     {
         MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath("/IWantItThatWay/IWantItThatWay.mid");
-        songNotes = ShiftOctaves(midiSong.notes, -1);
+        songNotes = ShiftOctaves(midiSong.notes, 0);
         var (lowest, highest) = MidiNoteReader.GetNoteRange(songNotes);
         midiToY = BuildMidiToYMap(lowest, highest);
 
@@ -171,7 +170,9 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
         rectTransform = GetComponent<RectTransform>();
         cursorRectTransform = Cursor.GetComponent<RectTransform>();
-        pitchDetector = PitchDetection.GetComponent<SimplePitchDetector>();
+
+        // GameManager uses 0 indexing for players
+        // TODO ideally we should refactor to initialize karaoke manager (and other sub managers) in songManager
     }
 
     void Update()
@@ -226,7 +227,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
     void UpdateCursorUI()
     {
-        float pitch = pitchDetector.pitch;
+        float pitch = pitchDetector.shiftedPitch;
 
         // Clamp frequency to UI range
         float pitch_clamped = Mathf.Clamp(pitch, UIBotFrequency, UITopFrequency);

@@ -140,7 +140,7 @@ namespace Lasp
         void Update()
         {
             var input = inputLevel;
-            var dt = Time.deltaTime;
+            var dt = Time.unscaledDeltaTime;
 
             // Auto gain control
             if (_autoGain)
