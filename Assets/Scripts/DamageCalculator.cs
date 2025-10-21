@@ -127,14 +127,14 @@ public class DamageCalculator : MonoBehaviour
             if (Player1Singing)
             {
             // Calculate accumulated damage and visualize using the slider
-            damageAccumulated1 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.pitch), pitchDetector.loudness);
+            damageAccumulated1 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.shiftedPitch), pitchDetector.gainedLoudness);
             //Debug.Log(damageAccumulated);
             currentDamageSlider.value = Mathf.Max(0, damageAccumulated1 / MaximumDamage);
             }
             else
             {
                 // Calculate accumulated damage and visualize using the slider
-                damageAccumulated2 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.pitch), pitchDetector.loudness);
+                damageAccumulated2 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.shiftedPitch), pitchDetector.gainedLoudness);
                 //Debug.Log(damageAccumulated);
                 currentDamageSlider.value = Mathf.Max(0, damageAccumulated2 / MaximumDamage);
             }
@@ -256,6 +256,6 @@ public class DamageCalculator : MonoBehaviour
     {
         yield return new WaitForSeconds(5);
         SongManager.Instance.EndSong();
-        GameManager.Instance.LoadScene("MenuScreen");
+        GameManager.LoadScene("MenuScreen");
     }
 }

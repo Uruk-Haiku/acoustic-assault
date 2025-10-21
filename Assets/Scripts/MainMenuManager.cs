@@ -20,7 +20,7 @@ public class MenuManager : MonoBehaviour
         selectLevelButton.onClick.AddListener(() => ShowPanel(selectLevelPanel));
         quitButton.onClick.AddListener(() => Application.Quit());
         backButton.onClick.AddListener(() => ShowPanel(mainMenuPanel));
-        level1Button.onClick.AddListener(() => GameManager.Instance.LoadScene(level1SceneName));
+        level1Button.onClick.AddListener(() => GameManager.LoadScene(level1SceneName));
 
         // Show main menu by default
         ShowPanel(mainMenuPanel);
