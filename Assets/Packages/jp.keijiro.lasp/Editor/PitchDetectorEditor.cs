@@ -137,6 +137,7 @@ namespace Lasp.Editor
                 
                 EditorGUILayout.FloatField("Current Pitch (Hz)", detector.pitch);
                 EditorGUILayout.FloatField("Raw Pitch (Hz)", detector.rawPitch);
+                EditorGUILayout.FloatField("Shifted Pitch (Hz)", detector.shiftedPitch);
                 EditorGUILayout.FloatField("Confidence", detector.confidence);
                 EditorGUILayout.FloatField("MIDI Note", OctaveNote.MidiNumFromFrequency(detector.pitch));
                 EditorGUILayout.TextField("Note Name", OctaveNote.FromFrequency(detector.pitch).ToString());

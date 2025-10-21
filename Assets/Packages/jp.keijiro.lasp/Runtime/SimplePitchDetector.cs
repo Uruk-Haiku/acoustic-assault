@@ -163,6 +163,9 @@ namespace Lasp
         // Current detected pitch in Hz
         public float pitch => _smoothedPitch;
 
+        // get distance from octave 3 and then adjust pitch accordingly
+        public float shiftedPitch => _smoothedPitch * Mathf.Pow(2f, 4 - octaveRange);
+
         // Raw detected pitch without smoothing (0 if no pitch detected)
         public float rawPitch => _currentPitch;
 

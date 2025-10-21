@@ -55,6 +55,8 @@ public class SongManager : MonoBehaviour
     {
         audioSourceBackingTrack = GetComponent<AudioSource>();
         songTime = -timeBeforeSongStarts;
+        karaokeManager.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
+        damageCalculator.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
     }
 
     void Update()
@@ -65,7 +67,12 @@ public class SongManager : MonoBehaviour
             Debug.Log(songTime);
             if (timeStampIndex < timeStamps.Length && songTime >= timeStamps[timeStampIndex])
             {
+                currentPlayer = (currentPlayer == 1) ? 2 : 1;
+                // TODO, we should simplify this so that it does not require explicit switching
+                // just pull the current player from the song manager
                 damageCalculator.SwitchPlayer();
+                karaokeManager.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
+                damageCalculator.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
                 timeStampIndex++;
             }
 
