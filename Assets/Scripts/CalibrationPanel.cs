@@ -10,14 +10,6 @@ public class CalibrationPanel : MonoBehaviour
     public List<GameObject> pageList;
     public TMP_Text pageText;
 
-    public float noiseCeil;
-
-    public float noiseFloor;
-
-    public float pitchCeil;
-
-    public float pitchFloor;
-
     public void NextPage()
     {
         pageList[currentPage].SetActive(false);
@@ -25,6 +17,11 @@ public class CalibrationPanel : MonoBehaviour
         {
             currentPage++;
             pageText.text = currentPage.ToString();
+            // If on the last page, hide navigation panel
+            if (currentPage == pageList.Count - 1)
+            {
+                navigationPanel.SetActive(false);
+            }
         }
         pageList[currentPage].SetActive(true);
     }

@@ -9,7 +9,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    [SerializeField] private GameObject pitchDetectionPrefab;
     public GameObject settingsCanvasUI;
     [SerializeField] public int[] initialPlayerIDs = { 0, 1 };
     public Dictionary<int, SimplePitchDetector> pitchDetectors = new Dictionary<int, SimplePitchDetector>();
@@ -64,7 +63,7 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("Player with ID " + playerID + " already exists.");
             return false;
         }
-        GameObject playerObj = Instantiate(Instance.pitchDetectionPrefab);
+        GameObject playerObj = new GameObject();
         playerObj.name = $"PitchDetector_Player{playerID}";
         DontDestroyOnLoad(playerObj);
 
@@ -100,11 +99,21 @@ public class GameManager : MonoBehaviour
     
     public static SimplePitchDetector GetPitchDetection(int playerID)
     {
+        if (Instance == null)
+        {
+            Debug.LogWarning("GameManager instance is null.");
+            return null;
+        }
         return Instance.pitchDetectors.TryGetValue(playerID, out SimplePitchDetector detector) ? detector : null;
     }
 
     public static GameObject GetPlayerGameObject(int playerID)
     {
+        if (Instance == null)
+        {
+            Debug.LogWarning("GameManager instance is null.");
+            return null;
+        }
         return Instance.playerGameObjects.TryGetValue(playerID, out GameObject obj) ? obj : null;
     }
     
@@ -186,5 +195,25 @@ public class GameManager : MonoBehaviour
     public static void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
+    }
+    public static void RecreatePitchDetector(int playerID)
+    {
+        if (Instance == null) return;
+        if (!Instance.pitchDetectors.ContainsKey(playerID))
+        {
+            Debug.LogWarning($"Player {playerID} doesn't exist!");
+            return;
+        }
+
+        // Remove and destroy
+        GameObject oldObj = Instance.playerGameObjects[playerID];
+        Destroy(oldObj);
+        Instance.pitchDetectors.Remove(playerID);
+        Instance.playerGameObjects.Remove(playerID);
+
+        // Recreate
+        AddPlayer(playerID);
+
+        Debug.Log($"Recreated PitchDetection for Player {playerID}");
     }
 }

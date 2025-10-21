@@ -20,6 +20,8 @@ namespace Lasp.Editor
         SerializedProperty _resolution;
         SerializedProperty _minFrequency;
         SerializedProperty _maxFrequency;
+        SerializedProperty _minRange;
+        SerializedProperty _maxRange;
         SerializedProperty _peakThreshold;
         SerializedProperty _peakNeighborhood;
         SerializedProperty _useHarmonicProduct;
@@ -45,6 +47,8 @@ namespace Lasp.Editor
                 _resolution = _finder["_resolution"];
                 _minFrequency = _finder["_minFrequency"];
                 _maxFrequency = _finder["_maxFrequency"];
+                _minRange = _finder["_minRange"];
+                _maxRange = _finder["_maxRange"];
                 _peakThreshold = _finder["_peakThreshold"];
                 _peakNeighborhood = _finder["_peakNeighborhood"];
                 _useHarmonicProduct = _finder["_useHarmonicProduct"];
@@ -95,6 +99,8 @@ namespace Lasp.Editor
             EditorGUILayout.LabelField("Pitch Detection", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(_minFrequency);
             EditorGUILayout.PropertyField(_maxFrequency);
+            EditorGUILayout.PropertyField(_minRange);
+            EditorGUILayout.PropertyField(_maxRange);
             EditorGUILayout.PropertyField(_peakThreshold);
             EditorGUILayout.PropertyField(_peakNeighborhood);
             
@@ -132,11 +138,14 @@ namespace Lasp.Editor
                 EditorGUILayout.FloatField("Current Pitch (Hz)", detector.pitch);
                 EditorGUILayout.FloatField("Raw Pitch (Hz)", detector.rawPitch);
                 EditorGUILayout.FloatField("Confidence", detector.confidence);
-                EditorGUILayout.FloatField("MIDI Note", detector.midiNote);
-                EditorGUILayout.TextField("Note Name", detector.noteName);
+                EditorGUILayout.FloatField("MIDI Note", OctaveNote.MidiNumFromFrequency(detector.pitch));
+                EditorGUILayout.TextField("Note Name", OctaveNote.FromFrequency(detector.pitch).ToString());
+                EditorGUILayout.FloatField("Cent Offset", OctaveNote.FromFrequency(detector.pitch).cent);
                 EditorGUILayout.FloatField("Current Gain (dB)", detector.currentGain);
                 EditorGUILayout.FloatField("Peak Magnitude", detector.peakMagnitude);
                 EditorGUILayout.FloatField("Loudness (dB)", detector.loudness);
+                EditorGUILayout.FloatField("Gained Loudness (dB)", detector.gainedLoudness);
+                EditorGUILayout.FloatField("Octave Range", detector.octaveRange);
                 
                 EditorGUI.EndDisabledGroup();
                 

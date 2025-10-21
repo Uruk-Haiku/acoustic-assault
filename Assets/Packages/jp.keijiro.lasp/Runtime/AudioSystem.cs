@@ -115,7 +115,7 @@ namespace Lasp
         static void Update()
         {
             Context.FlushEvents();
-            _inputDeviceList.UpdateAll(UnityEngine.Time.deltaTime);
+            _inputDeviceList.UpdateAll(UnityEngine.Time.unscaledDeltaTime);
         }
 
         #endregion
