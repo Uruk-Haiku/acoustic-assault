@@ -1143,7 +1143,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e082f2ccccc790747b9ea26af6ec40ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  playerScore: 0
+  settingsCanvasUI: {fileID: 0}
+  initialPlayerIDs: 0000000001000000
 --- !u!1 &774949485
 GameObject:
   m_ObjectHideFlags: 0
@@ -2990,9 +2991,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KaraokeBoxUIManager
   QuarterNote: {fileID: 3019214350187885928, guid: e2bcd6c0af5044c859c1a9a7c3118ede, type: 3}
   FirstChild: {fileID: 868956235}
-  PitchDetection: {fileID: 6196025450071984044}
   Cursor: {fileID: 678903508}
   damageCalculator: {fileID: 51320849}
+  pitchDetector: {fileID: 0}
 --- !u!4 &1738189550 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f8be81e085b1c4a7791a2a98abe11f90, type: 3}
@@ -3748,6 +3749,51 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 36429a16b2076684ab7c534e26bbcf41, type: 3}
+--- !u!1 &2065445962
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2065445964}
+  - component: {fileID: 2065445963}
+  m_Layer: 0
+  m_Name: MenuUIController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2065445963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065445962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3963e73acabfa8241a64cd3f074b99b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuUIController
+  firstSelected: {fileID: 1627596546}
+--- !u!4 &2065445964
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065445962}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1230.0546, y: 0, z: 3448.4229}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2087359868
 GameObject:
   m_ObjectHideFlags: 0
@@ -3968,9 +4014,12 @@ MonoBehaviour:
   _resolution: 2048
   _minFrequency: 80
   _maxFrequency: 600
+  _minRange: 60
+  _maxRange: 72
   _peakThreshold: 0.4
   _peakNeighborhood: 3
   _useHarmonicProduct: 0
+  _isPitchZeroWhenNone: 0
   _harmonicProductDepth: 3
   _autoGain: 0
   _gain: 0
@@ -4007,4 +4056,5 @@ SceneRoots:
   - {fileID: 51320850}
   - {fileID: 781247279}
   - {fileID: 1013634040}
+  - {fileID: 2065445964}
   - {fileID: 1454414055}
