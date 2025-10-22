@@ -74,7 +74,6 @@ public class NoiseCeilingCalibration : MonoBehaviour
     public void StartRecording()
     {
         if (isRecording) return; // Prevent starting if already recording
-        pitchDetector.isPitchZeroWhenNone = true;
         
         isRecording = true;
         recordingTimer = 0f;
@@ -93,7 +92,6 @@ public class NoiseCeilingCalibration : MonoBehaviour
     private void StopRecording()
     {
         isRecording = false;
-        pitchDetector.isPitchZeroWhenNone = false;
 
         // Update button state
         if (recordButton != null)

@@ -135,9 +135,6 @@ public class PitchCeilingCalibration : MonoBehaviour
         }
 
 
-        isRecording = false;
-        pitchDetector.isPitchZeroWhenNone = true;
-
         if (pitchDetector.octaveRange == -1)
         {
             _circularProgressBar.color = Color.red;
@@ -147,6 +144,8 @@ public class PitchCeilingCalibration : MonoBehaviour
         else
         {
 
+            isRecording = false;
+            pitchDetector.isPitchZeroWhenNone = true;
             _circularProgressBar.color = Color.yellow;
             Debug.Log($"Pitch ceiling calibration succeeded! Vocal range is {pitchDetector.octaveRange} octaves for Player {playerID}");
             helperText.text = $"Calibration succeeded! Vocal range is octave #3 {pitchDetector.octaveRange}";
