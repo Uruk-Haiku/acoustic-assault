@@ -38,7 +38,7 @@ namespace Lasp
         }
 
         // FFT resolution for pitch detection
-        [SerializeField] int _resolution = 2048;
+        [SerializeField] int _resolution = 1024;
         public int resolution
         {
             get => _resolution;
@@ -46,7 +46,7 @@ namespace Lasp
         }
 
         // Pitch detection range
-        [SerializeField, Range(50, 300)] float _minFrequency = 80;
+        [SerializeField, Range(50, 300)] float _minFrequency = 50;
         public float minFrequency
         {
             get => _minFrequency;
@@ -82,7 +82,7 @@ namespace Lasp
             set => _peakThreshold = value;
         }
 
-        [SerializeField, Range(1, 10)] int _peakNeighborhood = 3;
+        [SerializeField, Range(1, 10)] int _peakNeighborhood = 1;
         public int peakNeighborhood
         {
             get => _peakNeighborhood;
@@ -298,7 +298,8 @@ namespace Lasp
             if (_fft == null) return;
 
             var spectrum = _fft.Spectrum;
-            float binResolution = kSampleRate / (_resolution * 2);
+            // Assumed stream is valid
+            float binResolution = Stream.SampleRate / (_resolution * 2);
 
             // Calculate bin range for our frequency range
             int minBin = Mathf.Max(1, Mathf.FloorToInt(_minFrequency / binResolution));
@@ -394,7 +395,7 @@ namespace Lasp
             if (peakBin < 0) return 0;
 
             // Parabolic interpolation for sub-bin accuracy
-            float freq = peakBin * binResolution;
+            float freq = 0;
 
             if (peakBin > 0 && peakBin < spectrum.Length - 1)
             {
@@ -415,28 +416,37 @@ namespace Lasp
         float DetectPitchHPS(NativeArray<float> spectrum, float binResolution, int minBin, int maxBin, out float peakValue)
         {
             // Initialize HPS buffer if needed
-            if (!_hpsInitialized || _hpsBuffer.Length != spectrum.Length)
-            {
-                if (_hpsBuffer.IsCreated) _hpsBuffer.Dispose();
-                _hpsBuffer = new NativeArray<float>(spectrum.Length, Allocator.Persistent);
-                _hpsInitialized = true;
-            }
+            // if (!_hpsInitialized || _hpsBuffer.Length != spectrum.Length)
+            // {
+            //     if (_hpsBuffer.IsCreated) _hpsBuffer.Dispose();
+            //     _hpsBuffer = new NativeArray<float>(spectrum.Length, Allocator.Persistent);
+            //     _hpsInitialized = true;
+            // }
 
-            // Copy original spectrum
-            NativeArray<float>.Copy(spectrum, _hpsBuffer);
+            // // Convert from normalized dB to linear magnitude
+            // // spectrum is normalized [0,1] = (dBFS - floor) / (head - floor)
+            // // We need linear magnitude for HPS multiplication to work correctly
+            // // for (int i = 0; i < spectrum.Length; i++)
+            // // {
+            // //     _hpsBuffer[i] = math.pow(10f, spectrum[i] / 20f);
+            // // }
 
-            // Multiply downsampled versions (Harmonic Product)
-            for (int h = 2; h <= _harmonicProductDepth; h++)
-            {
-                for (int i = minBin; i <= maxBin / h; i++)
-                {
-                    int harmonicBin = i * h;
-                    if (harmonicBin < spectrum.Length)
-                    {
-                        _hpsBuffer[i] *= spectrum[harmonicBin];
-                    }
-                }
-            }
+            // for (int i = 0; i < spectrum.Length; i++)
+            // {
+            // }
+
+            // // Multiply using the already-converted values
+            // for (int h = 2; h <= _harmonicProductDepth; h++)
+            // {
+            //     for (int i = minBin; i <= maxBin / h; i++)
+            //     {
+            //         int harmonicBin = i * h;
+            //         if (harmonicBin < spectrum.Length)
+            //         {
+            //             spectrum[i] += _hpsBuffer[harmonicBin]; // Use _hpsBuffer, not spectrum!
+            //         }
+            //     }
+            // }
 
             // Find peak in HPS result
             int peakBin = -1;
@@ -444,25 +454,80 @@ namespace Lasp
 
             for (int i = minBin; i <= maxBin / _harmonicProductDepth; i++)
             {
-                float magnitude = _hpsBuffer[i];
-
-                if (magnitude > peakValue)
+                float culmMagnitude = spectrum[i];
+                for (int h = 2; h <= _harmonicProductDepth; h++)
                 {
-                    peakValue = magnitude;
+                    culmMagnitude += spectrum[i * h];
+                }
+
+                if (culmMagnitude > peakValue)
+                {
+                    peakValue = culmMagnitude;
                     peakBin = i;
                 }
             }
 
-            if (peakBin < 0) return 0;
-
-            // Convert to frequency with interpolation
-            float freq = peakBin * binResolution;
-
-            if (peakBin > 0 && peakBin < _hpsBuffer.Length - 1)
+            if (peakBin < 0)
             {
-                float alpha = _hpsBuffer[peakBin - 1];
-                float beta = _hpsBuffer[peakBin];
-                float gamma = _hpsBuffer[peakBin + 1];
+                peakValue = 0;
+                return 0;
+            }
+
+            // Verify harmonic structure before accepting the pitch
+            // float fundamentalPower = math.pow(10f, spectrum[peakBin] / 20f);
+            // float harmonicConfidence = 0f;
+            // int validHarmonics = 0;
+
+            // for (int h = 2; h <= math.min(4, _harmonicProductDepth); h++)
+            // {
+            //     int harmonicBin = peakBin * h;
+            //     if (harmonicBin < spectrum.Length)
+            //     {
+            //         float harmonicPower = math.pow(10f, spectrum[harmonicBin] / 20f);
+            //         // Check if harmonic is strong relative to fundamental
+            //         if (harmonicPower > fundamentalPower * 0.1f) // At least 10% of fundamental
+            //         {
+            //             harmonicConfidence += harmonicPower / fundamentalPower;
+            //             validHarmonics++;
+            //         }
+            //     }
+            // }
+
+            // // Require at least 2 valid harmonics for confidence
+            // if (validHarmonics < 2)
+            // {
+            //     peakValue = 0; // Not enough harmonic structure - likely noise
+            //     return 0;
+            // }
+
+            // // Check for octave errors (as per the HPS paper)
+            // if (peakBin >= minBin * 2)
+            // {
+            //     int lowerOctaveBin = peakBin / 2;
+            //     if (lowerOctaveBin >= minBin && lowerOctaveBin < _hpsBuffer.Length)
+            //     {
+            //         float lowerPeakValue = _hpsBuffer[lowerOctaveBin];
+
+            //         // Threshold for octave correction (0.2 for 5 harmonics as mentioned in the paper)
+            //         float threshold = 0.2f; // Adjust based on _harmonicProductDepth if needed
+            //         float amplitudeRatio = lowerPeakValue / peakValue;
+
+            //         if (amplitudeRatio > threshold)
+            //         {
+            //             peakBin = lowerOctaveBin;
+            //             peakValue = lowerPeakValue;
+            //         }
+            //     }
+            // }
+
+            // Convert to frequency with parabolic interpolation
+            float freq = 0;
+
+            if (peakBin > 0 && peakBin < spectrum.Length - 1)
+            {
+                float alpha = spectrum[peakBin - 1];
+                float beta = spectrum[peakBin];
+                float gamma = spectrum[peakBin + 1];
 
                 if (beta > 0 && (alpha - 2 * beta + gamma) != 0)
                 {
@@ -472,7 +537,8 @@ namespace Lasp
             }
 
             // Normalize peak value for HPS (it gets very small due to multiplication)
-            peakValue = math.pow(peakValue, 1f / _harmonicProductDepth);
+            peakValue /= _harmonicProductDepth;
+            // peakValue = math.pow(peakValue, 1f / _harmonicProductDepth);
 
             return freq;
         }
@@ -510,7 +576,7 @@ namespace Lasp
 
             // FFT
             Fft?.Push(Stream.GetChannelDataSlice(_channel));
-            Fft?.Analyze(-currentGain - _dynamicRange, -currentGain);
+            Fft?.Analyze(-currentGain -_dynamicRange, -currentGain);
 
             // Pitch detection
             AnalyzePitch();
