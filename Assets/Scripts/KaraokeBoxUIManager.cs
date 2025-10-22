@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Lasp;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,11 +11,13 @@ public class KaraokeBoxUIManager : MonoBehaviour
     public GameObject FirstChild;
     public GameObject Cursor;
     public DamageCalculator damageCalculator;
+    public TextMeshProUGUI lyricsText;
 
     private List<MidiNoteReader.NoteData> songNotes;
     public SimplePitchDetector pitchDetector;
     private RectTransform rectTransform;
     private RectTransform cursorRectTransform;
+    private RectTransform lyricsRectTransform;
 
     private float barDuration;
     private float currSongTime = -2f; // Starts 2 seconds before song starts to allow player to prepare
@@ -152,7 +155,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
     void Start()
     {
-        MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath("/IWantItThatWay/IWantItThatWay.mid");
+        MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath("IWantItThatWay/IWantItThatWay.mid");
         songNotes = ShiftOctaves(midiSong.notes, 0);
         var (lowest, highest) = MidiNoteReader.GetNoteRange(songNotes);
         midiToY = BuildMidiToYMap(lowest, highest);
@@ -170,6 +173,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
         rectTransform = GetComponent<RectTransform>();
         cursorRectTransform = Cursor.GetComponent<RectTransform>();
+        lyricsRectTransform = lyricsText.GetComponent<RectTransform>();
 
         // GameManager uses 0 indexing for players
         // TODO ideally we should refactor to initialize karaoke manager (and other sub managers) in songManager
@@ -198,6 +202,9 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
         List<MidiNoteReader.NoteData> currentNotes = MidiNoteReader.GetNotesInTimeRange(
             songNotes, currSongTime, currSongTime + barDuration);
+
+        float tStartLyrics = (9f - currSongTime) / barDuration;
+        lyricsRectTransform.anchoredPosition = new Vector2(-389.5f + tStartLyrics * 800f, lyricsRectTransform.anchoredPosition.y);
 
         foreach (var note in currentNotes)
         {
@@ -262,6 +269,6 @@ public class KaraokeBoxUIManager : MonoBehaviour
         isPlaying = true;
         currSongLength = midiSong.length;
         barDuration = 60.0f / bpm * 12f;
-        currSongTime = timeBeforeSongStarts - 0.29f * barDuration;
+        currSongTime = timeBeforeSongStarts - 0.297f * barDuration;
     }
 }

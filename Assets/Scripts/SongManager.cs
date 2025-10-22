@@ -101,10 +101,11 @@ public class SongManager : MonoBehaviour
                 Debug.LogError($"AudioClip Assets/Resources/Music/Songs/{song}/{song}Backing.wav not found in Resources.");
                 return;
             }
-
+            Debug.Log($"AudioClip Assets/Resources/Music/Songs/{song}/{song}Backing.wav Loaded");
             audioSourceBackingTrack.clip = clip;
             audioSourceBackingTrack.PlayDelayed(timeBeforeSongStarts);
         }
+        
     }
 
     public void EndSong()
