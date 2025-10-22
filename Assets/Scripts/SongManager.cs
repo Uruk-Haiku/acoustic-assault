@@ -89,6 +89,9 @@ public class SongManager : MonoBehaviour
         MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath($"{song}/{song}.mid");
         karaokeManager.StartPlaying(midiSong, -timeBeforeSongStarts);
         damageCalculator.StartRecordingDamage(-timeBeforeSongStarts - 9f);
+        
+        karaokeManager.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
+        damageCalculator.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
 
         if (playBackingTrack)
         {
@@ -110,6 +113,7 @@ public class SongManager : MonoBehaviour
         audioSourceBackingTrack.Stop();
         audioSourceBackingTrack.time = 0f;
         audioSourceBackingTrack.clip = null;
+        isPlayingSong = false;
     }
 
     public void PauseSong()
