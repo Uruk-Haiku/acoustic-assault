@@ -104,6 +104,8 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("GameManager instance is null.");
             return null;
         }
+
+        Debug.Log(Instance.pitchDetectors.TryGetValue(playerID, out SimplePitchDetector det) ? det : null);
         return Instance.pitchDetectors.TryGetValue(playerID, out SimplePitchDetector detector) ? detector : null;
     }
 
@@ -158,12 +160,15 @@ public class GameManager : MonoBehaviour
         }
 
         currSongManager = GameObject.Find("SongManager")?.GetComponent<SongManager>();
+        currSongManager.damageCalculator =  GameObject.Find("DamageCalculator")?.GetComponent<DamageCalculator>();
+        currSongManager.karaokeManager = GameObject.Find("KaraokeBox")?.GetComponent<KaraokeBoxUIManager>();
     }
     public void StartGame()
     {
         GameObject canvasObj = GameObject.Find("Canvas");
         GameObject startScreen = GameObject.Find("StartScreen");
         CanvasGroup canvasGroup = canvasObj.GetComponent<CanvasGroup>();
+        currSongManager.StartSong();
         startScreen.SetActive(false);
         if (canvasGroup != null)
         {
