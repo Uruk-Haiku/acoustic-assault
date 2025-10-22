@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 // Rudimentary SettingsManager that allows player 1 to open setting menu with button press esc, and player 2 with e
@@ -13,6 +14,8 @@ public class SettingsManager : MonoBehaviour
     public SelectedObjectManager selectedObjectManager;
 
     public Button[] buttonsToDisableWhenSettingsOpen;
+
+    private MenuUIController menuUIController;
 
     void Update()
     {
@@ -45,7 +48,18 @@ public class SettingsManager : MonoBehaviour
             {
                 GameManager.UnPauseGame();
                 settingsCanvasUI.SetActive(false);
-                CheckBackGroundMenu();
+                if (SceneManager.GetActiveScene().name == "MenuScreen")
+                {
+                    CheckBackGroundMenu();
+                }
+                else if (SceneManager.GetActiveScene().name == "SingingUI")
+                {
+                    menuUIController = FindAnyObjectByType<MenuUIController>();
+                    if (menuUIController != null)
+                    {
+                        menuUIController.SelectStartSong();
+                    }
+                }
             }
         }
         else
@@ -55,7 +69,10 @@ public class SettingsManager : MonoBehaviour
             // Open settings for this player
             settingsCanvasUI.SetActive(true);
             settingsPanel.ShowForPlayer(playerID);
-            DisableNavigation();
+            if (SceneManager.GetActiveScene().name == "MenuScreen")
+            {
+                DisableNavigation();
+            }
             selectedObjectManager.SetSelectedObject("BaseSettings");
         }
     }
@@ -64,7 +81,18 @@ public class SettingsManager : MonoBehaviour
         if (settingsCanvasUI.activeSelf)
         {
             settingsCanvasUI.SetActive(false);
-            CheckBackGroundMenu();
+            if (SceneManager.GetActiveScene().name == "MenuScreen")
+            {
+                CheckBackGroundMenu();
+            }
+            else if (SceneManager.GetActiveScene().name == "SingingUI")
+            {
+                menuUIController = FindAnyObjectByType<MenuUIController>();
+                if (menuUIController != null)
+                {
+                    menuUIController.SelectStartSong();
+                }
+            }
         }
     }
 

@@ -16,6 +16,10 @@ public class SelectedObjectManager : MonoBehaviour
     [SerializeField] private GameObject fs_PitchCeiling;
     [SerializeField] private GameObject fs_NextButton;
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
     public void SetSelectedObject(string objectName)
     {
         switch(objectName)
