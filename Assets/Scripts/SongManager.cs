@@ -108,6 +108,8 @@ public class SongManager : MonoBehaviour
     public void EndSong()
     {
         audioSourceBackingTrack.Stop();
+        audioSourceBackingTrack.time = 0f;
+        audioSourceBackingTrack.clip = null;
     }
 
     public void PauseSong()
