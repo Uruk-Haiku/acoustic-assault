@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CalibrationPanel : MonoBehaviour
 {
@@ -9,7 +10,16 @@ public class CalibrationPanel : MonoBehaviour
     public GameObject navigationPanel;
     public List<GameObject> pageList;
     public TMP_Text pageText;
+    
+    public SelectedObjectManager selectedObjectManager;
 
+    void Update()
+    {
+        if (navigationPanel.activeSelf == true && EventSystem.current.currentSelectedGameObject == null)
+        {
+            selectedObjectManager.SetSelectedObject("NextButton");
+        }
+    }
     public void NextPage()
     {
         pageList[currentPage].SetActive(false);
@@ -24,6 +34,21 @@ public class CalibrationPanel : MonoBehaviour
             }
         }
         pageList[currentPage].SetActive(true);
+        switch(currentPage)
+        {
+            case 1:
+                selectedObjectManager.SetSelectedObject("NoiseCeiling");
+                break;
+            case 2:
+                selectedObjectManager.SetSelectedObject("NoiseFloor");
+                break;
+            case 3:
+                selectedObjectManager.SetSelectedObject("PitchFloor");
+                break;
+            case 4:
+                selectedObjectManager.SetSelectedObject("PitchCeiling");
+                break;
+        }
     }
 
     public void BackPage()
@@ -35,6 +60,21 @@ public class CalibrationPanel : MonoBehaviour
             pageText.text = currentPage.ToString();
         }
         pageList[currentPage].SetActive(true);
+        switch (currentPage)
+        {
+            case 0:
+                selectedObjectManager.SetSelectedObject("DeviceSelection");
+                break;
+            case 1:
+                selectedObjectManager.SetSelectedObject("NoiseCeiling");
+                break;
+            case 2:
+                selectedObjectManager.SetSelectedObject("NoiseFloor");
+                break;
+            case 3:
+                selectedObjectManager.SetSelectedObject("PitchFloor");
+                break;
+        }
     }
 
     void OnEnable()
@@ -52,11 +92,5 @@ public class CalibrationPanel : MonoBehaviour
 
     void Start()
     {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

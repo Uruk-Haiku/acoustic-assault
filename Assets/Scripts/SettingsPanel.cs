@@ -12,6 +12,7 @@ public class SettingsPanel : MonoBehaviour
     public int currentPlayer;
     public SettingsPage currPage;
     public List<GameObject> subPanels;
+    public SelectedObjectManager selectedObjectManager;
 
     public void ShowForPlayer(int playerID)
     {
@@ -36,5 +37,10 @@ public class SettingsPanel : MonoBehaviour
         subPanels[(int)currPage].SetActive(false);
         currPage = (SettingsPage)page;
         subPanels[(int)currPage].SetActive(true);
+
+        if (page == 1)
+        {
+            selectedObjectManager.SetSelectedObject("DeviceSelection");
+        }
     }
 }

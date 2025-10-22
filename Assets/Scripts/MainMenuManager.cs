@@ -17,6 +17,8 @@ public class MenuManager : MonoBehaviour
     public Button level1Button;
     public string level1SceneName;
 
+    public SelectedObjectManager selectedObjectManager;
+
     void Start()
     {
         // Hook buttons to methods
@@ -43,12 +45,15 @@ public class MenuManager : MonoBehaviour
         // Wait one frame so Unity updates UI activation states
         yield return null;
 
-        GameObject target = panelToShow == selectLevelPanel
-            ? firstSelectedButton_SelectLevel
-            : firstSelectedButton_MainMenu;
+        if (panelToShow == mainMenuPanel)
+        {
+            selectedObjectManager.SetSelectedObject("MainMenu");
+        }
+        else if (panelToShow == selectLevelPanel)
+        {
+            selectedObjectManager.SetSelectedObject("SelectLevel");
+        }
 
-        EventSystem.current.SetSelectedGameObject(null); // Clear first to avoid sticking
-        EventSystem.current.SetSelectedGameObject(target);
-        Debug.Log("Selected button is now: " + EventSystem.current.currentSelectedGameObject.name);
+        // Debug.Log("Selected button is now: " + EventSystem.current.currentSelectedGameObject.name);
     }
 }
