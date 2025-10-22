@@ -40,7 +40,7 @@ namespace Lasp
             }
 
             float midiNumFloat = 69 + 12 * Mathf.Log(frequency / 440f, 2);
-            int midiNum = Mathf.FloorToInt(midiNumFloat);
+            int midiNum = Mathf.RoundToInt(midiNumFloat);
             int cent = Mathf.RoundToInt((midiNumFloat - midiNum) * 100);
 
             return new OctaveNote
@@ -54,7 +54,7 @@ namespace Lasp
         public static int MidiNumFromFrequency(float frequency)
         {
             if (frequency <= 0) return 0;
-            return Mathf.FloorToInt(69 + 12 * Mathf.Log(frequency / 440f, 2));
+            return Mathf.RoundToInt(69 + 12 * Mathf.Log(frequency / 440f, 2));
         }
 
         static string noteNameFromInt(int midiNum)

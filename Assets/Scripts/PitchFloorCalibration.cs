@@ -125,7 +125,7 @@ public class PitchFloorCalibration : MonoBehaviour
     private void StopRecording()
     {
         isRecording = false;
-        pitchDetector.isPitchZeroWhenNone = true;
+        pitchDetector.isPitchZeroWhenNone = false;
 
         // Show that progress is done
          _circularProgressBar.color = Color.yellow;
