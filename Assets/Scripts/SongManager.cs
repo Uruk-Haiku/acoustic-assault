@@ -86,7 +86,7 @@ public class SongManager : MonoBehaviour
     public void StartSong(string song = "IWantItThatWay")
     {
         isPlayingSong = true;
-        MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath($"/{song}/{song}.mid");
+        MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath($"{song}/{song}");
         karaokeManager.StartPlaying(midiSong, -timeBeforeSongStarts);
         damageCalculator.StartRecordingDamage(-timeBeforeSongStarts - 9f);
 
@@ -98,10 +98,11 @@ public class SongManager : MonoBehaviour
                 Debug.LogError($"AudioClip Assets/Resources/Music/Songs/{song}/{song}Backing.wav not found in Resources.");
                 return;
             }
-
+            Debug.Log($"AudioClip Assets/Resources/Music/Songs/{song}/{song}Backing.wav Loaded");
             audioSourceBackingTrack.clip = clip;
             audioSourceBackingTrack.PlayDelayed(timeBeforeSongStarts);
         }
+        
     }
 
     public void EndSong()

@@ -8,7 +8,7 @@ public class GameManagerExample : MonoBehaviour
     void Start()
     {
         // Load the MIDI file
-        songNotes = MidiNoteReader.GetNotesFromMidi("HotelCalifornia.mid");
+        songNotes = MidiNoteReader.GetNotesFromMidi("HotelCalifornia");
         
         // Print first 20 notes for debugging
         MidiNoteReader.PrintNotes(songNotes, 20);
