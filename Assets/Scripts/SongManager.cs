@@ -1,3 +1,4 @@
+using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
@@ -86,7 +87,9 @@ public class SongManager : MonoBehaviour
     public void StartSong(string song = "IWantItThatWay")
     {
         isPlayingSong = true;
-        MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath($"{song}/{song}.mid");
+        //MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath($"/{song}/{song}.mid");
+        string path = Path.Combine(Application.streamingAssetsPath, "Songs", song, $"{song}.mid");
+        MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath(path);
         karaokeManager.StartPlaying(midiSong, -timeBeforeSongStarts);
         damageCalculator.StartRecordingDamage(-timeBeforeSongStarts - 9f);
 
