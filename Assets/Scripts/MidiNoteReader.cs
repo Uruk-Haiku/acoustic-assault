@@ -42,26 +42,13 @@ public static class MidiNoteReader
         List<NoteData> noteDataList = new List<NoteData>();
         float length = 0f;
         float bpm = 120f; // Default BPM
-        var midiFile = new MidiFile();
         
         try
         {
             
-            Debug.Log($"Attempting to load: Music/Songs/{fileName}");
-            Debug.Log($"All Resources in Music/Songs: {string.Join(", ", Resources.LoadAll<TextAsset>("Music/Songs").Select(t => t.name))}");
-            TextAsset midiAsset = Resources.Load<TextAsset>($"Music/Songs/{fileName}");
-
-            if (midiAsset != null)
-            {
-                using (var memoryStream = new MemoryStream(midiAsset.bytes))
-                {
-                    midiFile = MidiFile.Read(memoryStream);
-                }
-            }
-            else
-            {
-                Debug.LogError($"Failed to load MIDI file: Music/Songs/{fileName}");
-            }
+            // Read the MIDI file from Assets/MidiFiles/
+            string path = $"Assets/Resources/Music/Songs/{fileName}";
+            var midiFile = MidiFile.Read(path);
             
             // Get tempo map for accurate time conversion
             var tempoMap = midiFile.GetTempoMap();

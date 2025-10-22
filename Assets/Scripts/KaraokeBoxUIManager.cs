@@ -155,7 +155,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
     void Start()
     {
-        MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath("IWantItThatWay/IWantItThatWay");
+        MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath("IWantItThatWay/IWantItThatWay.mid");
         songNotes = ShiftOctaves(midiSong.notes, 0);
         var (lowest, highest) = MidiNoteReader.GetNoteRange(songNotes);
         midiToY = BuildMidiToYMap(lowest, highest);
