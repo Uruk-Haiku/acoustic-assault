@@ -3,6 +3,7 @@ using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 public static class MidiNoteReader
 {
@@ -44,6 +45,7 @@ public static class MidiNoteReader
         
         try
         {
+            
             // Read the MIDI file from Assets/MidiFiles/
             string path = $"Assets/Resources/Music/Songs/{fileName}";
             var midiFile = MidiFile.Read(path);
