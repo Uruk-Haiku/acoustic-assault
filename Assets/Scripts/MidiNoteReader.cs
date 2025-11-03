@@ -47,7 +47,7 @@ public static class MidiNoteReader
         {
             
             // Read the MIDI file from Assets/MidiFiles/
-            string path = $"Assets/Resources/Music/Songs/{fileName}";
+            string path = Path.Combine(Application.streamingAssetsPath, "Songs", "IWantItThatWay", $"{"IWantItThatWay"}.mid"); ;
             var midiFile = MidiFile.Read(path);
             
             // Get tempo map for accurate time conversion

@@ -1465,7 +1465,7 @@ MonoBehaviour:
   recordButton: {fileID: 1707624385}
   _circularProgressBar: {fileID: 1565315375}
   _circularCentOffSetBar: {fileID: 802989458}
-  recordTime: 1.5
+  recordTime: 1.2
   _progressColor: {r: 0, g: 1, b: 0, a: 1}
   _incompleteColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!114 &707215677
@@ -10631,7 +10631,7 @@ MonoBehaviour:
   recordButton: {fileID: 370907320}
   _circularProgressBar: {fileID: 232715455}
   _circularCentOffSetBar: {fileID: 174113590}
-  recordTime: 1.5
+  recordTime: 1.2
   _progressColor: {r: 0, g: 1, b: 0, a: 1}
   _incompleteColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!224 &8771371204284221385

@@ -13,7 +13,7 @@ public class PitchCeilingCalibration : MonoBehaviour
     [SerializeField] Image _circularCentOffSetBar;
 
     [Header("Recording Settings")]
-    [SerializeField] private float recordTime = 1.5f; // Recording duration in seconds
+    [SerializeField] private float recordTime = 1.2f; // Recording duration in seconds
 
     [Header("Visual Settings")]
     [SerializeField] Color _progressColor = Color.green;

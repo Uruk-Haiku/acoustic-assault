@@ -88,7 +88,7 @@ public class SongManager : MonoBehaviour
     {
         isPlayingSong = true;
         //MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath($"/{song}/{song}.mid");
-        string path = Path.Combine(Application.streamingAssetsPath, "Songs", song, $"{song}.mid");
+        string path = Path.Combine(Application.streamingAssetsPath, "Songs", "IWantItThatWay", $"{"IWantItThatWay"}.mid");
         MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath(path);
         karaokeManager.StartPlaying(midiSong, -timeBeforeSongStarts);
         damageCalculator.StartRecordingDamage(-timeBeforeSongStarts - 9f);
