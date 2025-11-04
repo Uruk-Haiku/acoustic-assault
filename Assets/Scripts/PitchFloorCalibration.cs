@@ -24,7 +24,7 @@ public class PitchFloorCalibration : MonoBehaviour
     private int playerID;
     private bool isRecording = false;
     private int calibratedMidiNum = 0;
-    private Lasp.SimplePitchDetector pitchDetector;
+    private PitchDetector pitchDetector;
 
     void Start()
     {
@@ -68,7 +68,7 @@ public class PitchFloorCalibration : MonoBehaviour
             return;
         }
 
-        int currMidiNum = OctaveNote.MidiNumFromFrequency(pitchDetector.pitch);
+        int currMidiNum = OctaveNote.MidiNumFromFrequency(pitchDetector.rawPitch);
 
         helperText.text = $"Recording...Please hold your pitch)";
         noteText.text = OctaveNote.FromMidiNum(currMidiNum).ToString();
@@ -91,7 +91,7 @@ public class PitchFloorCalibration : MonoBehaviour
         recordingTimer += Time.unscaledDeltaTime;
         float progress = Mathf.Clamp01(recordingTimer / recordTime);
         _circularProgressBar.fillAmount = progress;
-        _circularCentOffSetBar.fillAmount = (OctaveNote.FromFrequency(pitchDetector.pitch).cent / 50f) + 0.5f;
+        _circularCentOffSetBar.fillAmount = (OctaveNote.FromFrequency(pitchDetector.rawPitch).cent / 50f) + 0.5f;
 
         if (recordingTimer >= recordTime)
         {
@@ -102,7 +102,6 @@ public class PitchFloorCalibration : MonoBehaviour
     public void StartRecording()
     {
         if (isRecording) return; // Prevent starting if already recording
-        pitchDetector.isPitchZeroWhenNone = true;
         
         isRecording = true;
         recordingTimer = 0f;
@@ -125,12 +124,10 @@ public class PitchFloorCalibration : MonoBehaviour
     private void StopRecording()
     {
         isRecording = false;
-        pitchDetector.isPitchZeroWhenNone = false;
 
         // Show that progress is done
          _circularProgressBar.color = Color.yellow;
         // Set min vocal range (in MIDI note number) based on calibrated note
-         pitchDetector.minRange = calibratedMidiNum;
         
         // Update button state
         if (recordButton != null)
@@ -146,7 +143,6 @@ public class PitchFloorCalibration : MonoBehaviour
     private void ResetRecording()
     {
         isRecording = false;
-        pitchDetector.isPitchZeroWhenNone = false;
         recordingTimer = 0f;
         calibratedMidiNum = 0;
         _circularProgressBar.fillAmount = 0f;

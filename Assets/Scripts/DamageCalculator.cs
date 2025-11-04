@@ -6,7 +6,7 @@ using TMPro;
 public class DamageCalculator : MonoBehaviour
 {
     [Header("GameObjects References")]
-    public SimplePitchDetector pitchDetector;
+    public PitchDetector pitchDetector;
     //public SimpleMidiPlayer midiPlayer;
     // Damage Slider UI element to show damage
     public UnityEngine.UI.Slider damageSlider1;
@@ -136,7 +136,7 @@ public class DamageCalculator : MonoBehaviour
             if (Player1Singing)
             {
                 // Calculate accumulated damage and visualize using the slider
-                damageAccumulated1 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.shiftedPitch), pitchDetector.gainedLoudness);
+                damageAccumulated1 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.offsetDisplayPitch), pitchDetector.gainedLevel);
                 //Debug.Log(damageAccumulated);
                 currentDamageSlider.value = Mathf.Max(0, (currentHealth2 - ((totalDamage1 + damageAccumulated1) / MaximumDamage) * damageEffectMultiplier));
                 //currentHealth2 = currentDamageSlider.value;
@@ -144,7 +144,7 @@ public class DamageCalculator : MonoBehaviour
             else
             {
                 // Calculate accumulated damage and visualize using the slider
-                damageAccumulated2 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.shiftedPitch), pitchDetector.gainedLoudness);
+                damageAccumulated2 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.offsetDisplayPitch), pitchDetector.gainedLevel);
                 //Debug.Log(damageAccumulated);
                 currentDamageSlider.value = Mathf.Max(0, (currentHealth1 - ((totalDamage2 + damageAccumulated2) / MaximumDamage) * damageEffectMultiplier));
                 //currentHealth1 = currentDamageSlider.value;

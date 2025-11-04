@@ -15,7 +15,7 @@ public class NoiseFloorCalibration : MonoBehaviour
     private int playerID;
     private bool isRecording = false;
     private float avgDB = float.MinValue;
-    private Lasp.SimplePitchDetector pitchDetector;
+    private Lasp.PitchDetector pitchDetector;
 
     
     void OnEnable()
@@ -42,7 +42,7 @@ public class NoiseFloorCalibration : MonoBehaviour
             return;
         }
 
-        float currentDB = pitchDetector.gainedLoudness;
+        float currentDB = pitchDetector.gainedLevel;
 
         if (isRecording)
         {
@@ -103,6 +103,8 @@ public class NoiseFloorCalibration : MonoBehaviour
         if (pitchDetector != null)
         {
             pitchDetector.dynamicRange = -avgDB;
+            // TODO: keep this? Sneaking in some extra gain
+            pitchDetector.gain += 4;
             Debug.Log($"Set dynamic range to {-avgDB:F1}dB for Player {playerID}");
         }
     }

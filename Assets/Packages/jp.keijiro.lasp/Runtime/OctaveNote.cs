@@ -7,6 +7,8 @@ namespace Lasp
         public string note;
         public int octave;
         public int cent;
+        public int midiNum;
+        public int noteFrequency;
 
         public override string ToString()
         {
@@ -23,7 +25,9 @@ namespace Lasp
             {
                 note = noteNameFromInt(midiNum),
                 octave = (midiNum / 12) - 1,
-                cent = 0
+                cent = 0,
+                noteFrequency = Mathf.RoundToInt(440f * Mathf.Pow(2f, (midiNum - 69) / 12f)),
+                midiNum = midiNum
             };
         }
 
@@ -35,7 +39,10 @@ namespace Lasp
                 {
                     note = "",
                     octave = 0,
-                    cent = 0
+                    cent = 0,
+                    noteFrequency = 0,
+                    // TODO: is midi num 0 = 0hz?
+                    midiNum = 0
                 };
             }
 
@@ -47,7 +54,9 @@ namespace Lasp
             {
                 note = noteNameFromInt(midiNum),
                 octave = (midiNum / 12) - 1,
-                cent = cent
+                cent = cent,
+                noteFrequency = Mathf.RoundToInt(440f * Mathf.Pow(2f, (midiNum - 69) / 12f)),
+                midiNum = midiNum,
             };
         }
 

@@ -41,7 +41,7 @@ public class DeviceSelectionPopulator : MonoBehaviour
         // We need to recreate the pitch detector object since you can't change mics when
         // stream is running.
         GameManager.RecreatePitchDetector(playerID);
-        SimplePitchDetector pitchDetector = GameManager.GetPitchDetection(playerID);
+        PitchDetector pitchDetector = GameManager.GetPitchDetection(playerID);
         Debug.Log("Selecting device ID: " + selectedOption.id);
         pitchDetector.TrySelectDevice(selectedOption.id);
         deviceDropdown.RefreshShownValue();

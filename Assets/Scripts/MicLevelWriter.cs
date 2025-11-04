@@ -20,7 +20,7 @@ public class MicLevelWriter : MonoBehaviour
     [SerializeField] float _warningThreshold = 0.7f;
     [SerializeField] float _dangerThreshold = 0.9f;
     [SerializeField] bool dynamicRangeEnabled = false;
-    private Lasp.SimplePitchDetector pitchDetector;
+    private Lasp.PitchDetector pitchDetector;
     void OnEnable()
     {
         // Get current player
@@ -38,11 +38,11 @@ public class MicLevelWriter : MonoBehaviour
         if (pitchDetector == null) return;
         // TODO is this stored in memory every frame? I just want to grab the reference and then use it
         levelText.text =
-        pitchDetector.gainedLoudness.ToString("F1")
+        pitchDetector.gainedLevel.ToString("F1")
         +
         "dB";
 
-        float level = (pitchDetector.gainedLoudness + 100) / 100; // Assuming this property exists
+        float level = (pitchDetector.gainedLevel + 100) / 100; // Assuming this property exists
 
         // Update fill bar scale
         _meterFillBar.localScale = new Vector3(level, 1f, 1f);

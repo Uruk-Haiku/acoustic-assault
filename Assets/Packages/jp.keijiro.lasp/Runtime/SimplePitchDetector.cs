@@ -38,7 +38,7 @@ namespace Lasp
         }
 
         // FFT resolution for pitch detection
-        [SerializeField] int _resolution = 1024;
+        [SerializeField] int _resolution = 2048;
         public int resolution
         {
             get => _resolution;
@@ -164,7 +164,7 @@ namespace Lasp
         public float pitch => _smoothedPitch;
 
         // get distance from octave 3 and then adjust pitch accordingly
-        public float shiftedPitch => _smoothedPitch * Mathf.Pow(2f, 4 - octaveRange);
+        public float shiftedPitch => _smoothedPitch * Mathf.Pow(2f, 3 - octaveRange);
 
         // Raw detected pitch without smoothing (0 if no pitch detected)
         public float rawPitch => _currentPitch;
@@ -250,9 +250,6 @@ namespace Lasp
         // Nominal level of auto gain (recent maximum level)
         float _head = kSilence;
 
-        // Sample rate (assumed)
-        const float kSampleRate = 48000f;
-
         // Current detection results
         float _currentPitch;
         float _smoothedPitch;
@@ -286,7 +283,7 @@ namespace Lasp
         InputStream _stream;
 
         // FFT buffer object with lazy initialization
-        FftBuffer Fft => _fft ?? (_fft = new FftBuffer(_resolution * 2));
+        FftBuffer Fft => _fft ?? (_fft = new FftBuffer(_resolution * 2, Stream.SampleRate));
         FftBuffer _fft;
 
         #endregion
@@ -311,7 +308,29 @@ namespace Lasp
             if (_useHarmonicProduct)
             {
                 // Harmonic Product Spectrum method
-                detectedFreq = DetectPitchHPS(spectrum, binResolution, minBin, maxBin, out peakValue);
+                // detectedFreq = DetectPitchHPS(spectrum, binResolution, minBin, maxBin, out peakValue);
+                float _detectedFreq;
+                (_detectedFreq, _currentConfidence) = Fft?.DetectPitch(_minFrequency, _maxFrequency) ?? (0f, 0f);
+                if (_currentConfidence > _peakThreshold)
+                {
+                    _currentPitch = _detectedFreq;
+                    float ratio = _detectedFreq / _smoothedPitch;
+                    if (ratio > 0.8f && ratio < 1.2f)
+                    {
+                        _smoothedPitch = math.lerp(_smoothedPitch, _detectedFreq, 1f - _smoothing);
+                    }
+                    else
+                    {
+                        _smoothedPitch = _detectedFreq;
+                    }
+                }
+                else
+                {
+                    _currentConfidence = 0;
+                    _currentPitch = _isPitchZeroWhenNone ? 0 : _currentPitch;
+                    _smoothedPitch = _isPitchZeroWhenNone ? 0 : _smoothedPitch;
+                }
+                return;
             }
             else
             {
@@ -558,21 +577,21 @@ namespace Lasp
 
         void Update()
         {
-            var input = Stream?.GetChannelLevel(_channel) ?? kSilence;
-            var dt = Time.unscaledDeltaTime;
+            // var input = Stream?.GetChannelLevel(_channel) ?? kSilence;
+            // var dt = Time.unscaledDeltaTime;
 
-            // Auto gain control
-            if (_autoGain)
-            {
-                // Slowly return to the noise floor.
-                const float kDecaySpeed = 0.6f;
-                _head -= kDecaySpeed * dt;
-                _head = Mathf.Max(_head, kSilence + _dynamicRange);
+            // // Auto gain control
+            // if (_autoGain)
+            // {
+            //     // Slowly return to the noise floor.
+            //     const float kDecaySpeed = 0.6f;
+            //     _head -= kDecaySpeed * dt;
+            //     _head = Mathf.Max(_head, kSilence + _dynamicRange);
 
-                // Pull up by input with a small headroom.
-                var room = _dynamicRange * 0.05f;
-                _head = Mathf.Clamp(input - room, _head, 0);
-            }
+            //     // Pull up by input with a small headroom.
+            //     var room = _dynamicRange * 0.05f;
+            //     _head = Mathf.Clamp(input - room, _head, 0);
+            // }
 
             // FFT
             Fft?.Push(Stream.GetChannelDataSlice(_channel));
