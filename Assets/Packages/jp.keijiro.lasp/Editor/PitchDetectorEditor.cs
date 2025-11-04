@@ -4,11 +4,11 @@ using UnityEditor;
 namespace Lasp.Editor
 {
     //
-    // Custom editor for SimplePitchDetector component
+    // Custom editor for PitchDetector component
     //
-    [CustomEditor(typeof(SimplePitchDetector))]
+    [CustomEditor(typeof(PitchDetector))]
     [CanEditMultipleObjects]
-    public sealed class SimplePitchDetectorEditor : UnityEditor.Editor
+    public sealed class PitchDetectorEditor : UnityEditor.Editor
     {
         #region Private members
 
@@ -16,20 +16,17 @@ namespace Lasp.Editor
         PropertyFinder _finder;
 
         // Serialized properties for organized display
-        SerializedProperty _channel;
-        SerializedProperty _resolution;
-        SerializedProperty _minFrequency;
-        SerializedProperty _maxFrequency;
-        SerializedProperty _minRange;
-        SerializedProperty _maxRange;
-        SerializedProperty _peakThreshold;
-        SerializedProperty _peakNeighborhood;
-        SerializedProperty _useHarmonicProduct;
-        SerializedProperty _harmonicProductDepth;
-        SerializedProperty _autoGain;
-        SerializedProperty _gain;
-        SerializedProperty _dynamicRange;
-        SerializedProperty _smoothing;
+        SerializedProperty resolution;
+        SerializedProperty minFrequency;
+        SerializedProperty maxFrequency;
+        SerializedProperty minRange;
+        SerializedProperty maxRange;
+        SerializedProperty pitchOffsetInSemitones;
+        SerializedProperty threshold;
+        SerializedProperty gain;
+        SerializedProperty dynamicRange;
+        SerializedProperty smoothingStrength;
+        SerializedProperty snapStrength;
 
         #endregion
 
@@ -43,20 +40,17 @@ namespace Lasp.Editor
                 _finder = new PropertyFinder(serializedObject);
 
                 // Cache property references
-                _channel = _finder["_channel"];
-                _resolution = _finder["_resolution"];
-                _minFrequency = _finder["_minFrequency"];
-                _maxFrequency = _finder["_maxFrequency"];
-                _minRange = _finder["_minRange"];
-                _maxRange = _finder["_maxRange"];
-                _peakThreshold = _finder["_peakThreshold"];
-                _peakNeighborhood = _finder["_peakNeighborhood"];
-                _useHarmonicProduct = _finder["_useHarmonicProduct"];
-                _harmonicProductDepth = _finder["_harmonicProductDepth"];
-                _autoGain = _finder["_autoGain"];
-                _gain = _finder["_gain"];
-                _dynamicRange = _finder["_dynamicRange"];
-                _smoothing = _finder["_smoothing"];
+                resolution = _finder["resolution"];
+                minFrequency = _finder["minFrequency"];
+                maxFrequency = _finder["maxFrequency"];
+                minRange = _finder["minRange"];
+                maxRange = _finder["maxRange"];
+                pitchOffsetInSemitones = _finder["pitchOffsetInSemitones"];
+                threshold = _finder["threshold"];
+                gain = _finder["gain"];
+                dynamicRange = _finder["dynamicRange"];
+                smoothingStrength = _finder["smoothingStrength"];
+                snapStrength = _finder["snapStrength"];
             }
             catch
             {
@@ -80,50 +74,32 @@ namespace Lasp.Editor
             else
             {
                 // Fallback for multi-object editing or when DeviceSelector fails
-                EditorGUILayout.PropertyField(serializedObject.FindProperty("_useDefaultDevice"), new GUIContent("Default Device"));
-                if (!serializedObject.FindProperty("_useDefaultDevice").boolValue || serializedObject.FindProperty("_useDefaultDevice").hasMultipleDifferentValues)
-                {
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("_deviceID"), new GUIContent("Device ID"));
-                }
+                EditorGUILayout.PropertyField(serializedObject.FindProperty("deviceID"), new GUIContent("Device ID"));
             }
             
-            EditorGUILayout.PropertyField(_channel);
             EditorGUILayout.Space();
 
             // FFT Settings Section
             EditorGUILayout.LabelField("FFT Settings", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(_resolution);
+            EditorGUILayout.PropertyField(resolution);
             EditorGUILayout.Space();
 
             // Pitch Detection Section
-            EditorGUILayout.LabelField("Pitch Detection", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(_minFrequency);
-            EditorGUILayout.PropertyField(_maxFrequency);
-            EditorGUILayout.PropertyField(_minRange);
-            EditorGUILayout.PropertyField(_maxRange);
-            EditorGUILayout.PropertyField(_peakThreshold);
-            EditorGUILayout.PropertyField(_peakNeighborhood);
-            
-            EditorGUILayout.PropertyField(_useHarmonicProduct);
-            if (_useHarmonicProduct.boolValue)
-            {
-                EditorGUI.indentLevel++;
-                EditorGUILayout.PropertyField(_harmonicProductDepth);
-                EditorGUI.indentLevel--;
-            }
+            EditorGUILayout.LabelField("Pitch Detection Range", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(minFrequency, new GUIContent("Min Frequency (Hz)"));
+            EditorGUILayout.PropertyField(maxFrequency, new GUIContent("Max Frequency (Hz)"));
+            EditorGUILayout.PropertyField(minRange, new GUIContent("Min Range (MIDI)"));
+            EditorGUILayout.PropertyField(maxRange, new GUIContent("Max Range (MIDI)"));
+            EditorGUILayout.PropertyField(pitchOffsetInSemitones, new GUIContent("Pitch Offset (Semitones)"));
+            EditorGUILayout.PropertyField(threshold, new GUIContent("Detection Threshold"));
             EditorGUILayout.Space();
 
             // Audio Processing Section
             EditorGUILayout.LabelField("Audio Processing", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(_autoGain);
-            if (!_autoGain.boolValue)
-            {
-                EditorGUI.indentLevel++;
-                EditorGUILayout.PropertyField(_gain);
-                EditorGUI.indentLevel--;
-            }
-            EditorGUILayout.PropertyField(_dynamicRange);
-            EditorGUILayout.PropertyField(_smoothing);
+            EditorGUILayout.PropertyField(gain, new GUIContent("Input Gain (dB)"));
+            EditorGUILayout.PropertyField(dynamicRange, new GUIContent("Dynamic Range (dB)"));
+            EditorGUILayout.PropertyField(smoothingStrength, new GUIContent("Smoothing Strength"));
+            EditorGUILayout.PropertyField(snapStrength, new GUIContent("Snap Strength"));
             EditorGUILayout.Space();
 
             // Runtime Information (only shown during play mode and single selection)
@@ -131,22 +107,25 @@ namespace Lasp.Editor
             {
                 EditorGUILayout.LabelField("Runtime Information", EditorStyles.boldLabel);
                 
-                var detector = (SimplePitchDetector)target;
+                var detector = (PitchDetector)target;
                 
                 EditorGUI.BeginDisabledGroup(true);
                 
-                EditorGUILayout.FloatField("Current Pitch (Hz)", detector.pitch);
                 EditorGUILayout.FloatField("Raw Pitch (Hz)", detector.rawPitch);
-                EditorGUILayout.FloatField("Shifted Pitch (Hz)", detector.shiftedPitch);
+                EditorGUILayout.FloatField("Display Pitch (Hz)", detector.displayPitch);
+                EditorGUILayout.FloatField("Offset Display Pitch (Hz)", detector.offsetDisplayPitch);
                 EditorGUILayout.FloatField("Confidence", detector.confidence);
-                EditorGUILayout.FloatField("MIDI Note", OctaveNote.MidiNumFromFrequency(detector.pitch));
-                EditorGUILayout.TextField("Note Name", OctaveNote.FromFrequency(detector.pitch).ToString());
-                EditorGUILayout.FloatField("Cent Offset", OctaveNote.FromFrequency(detector.pitch).cent);
-                EditorGUILayout.FloatField("Current Gain (dB)", detector.currentGain);
-                EditorGUILayout.FloatField("Peak Magnitude", detector.peakMagnitude);
-                EditorGUILayout.FloatField("Loudness (dB)", detector.loudness);
-                EditorGUILayout.FloatField("Gained Loudness (dB)", detector.gainedLoudness);
-                EditorGUILayout.FloatField("Octave Range", detector.octaveRange);
+                EditorGUILayout.FloatField("Level (dB)", detector.level);
+                EditorGUILayout.FloatField("Gained Level (dB)", detector.gainedLevel);
+                
+                // Show note information if we have a valid pitch
+                if (detector.displayPitch > 0)
+                {
+                    OctaveNote note = OctaveNote.FromFrequency(detector.offsetDisplayPitch);
+                    EditorGUILayout.TextField("Note Name", note.ToString());
+                    EditorGUILayout.FloatField("MIDI Note", OctaveNote.MidiNumFromFrequency(detector.offsetDisplayPitch));
+                    EditorGUILayout.FloatField("Cent Offset", note.cent);
+                }
                 
                 EditorGUI.EndDisabledGroup();
                 

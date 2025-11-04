@@ -24,7 +24,7 @@ public class PitchCeilingCalibration : MonoBehaviour
     private int playerID;
     private bool isRecording = false;
     private int calibratedMidiNum = 0;
-    private Lasp.SimplePitchDetector pitchDetector;
+    private PitchDetector pitchDetector;
 
     void Start()
     {
@@ -67,7 +67,7 @@ public class PitchCeilingCalibration : MonoBehaviour
             return;
         }
 
-        int currMidiNum = OctaveNote.MidiNumFromFrequency(pitchDetector.pitch);
+        int currMidiNum = OctaveNote.MidiNumFromFrequency(pitchDetector.rawPitch);
 
         helperText.text = $"Recording...Please hold your pitch)";
         noteText.text = OctaveNote.FromMidiNum(currMidiNum).ToString();
@@ -90,7 +90,7 @@ public class PitchCeilingCalibration : MonoBehaviour
         recordingTimer += Time.unscaledDeltaTime;
         float progress = Mathf.Clamp01(recordingTimer / recordTime);
         _circularProgressBar.fillAmount = progress;
-        _circularCentOffSetBar.fillAmount = (OctaveNote.FromFrequency(pitchDetector.pitch).cent / 50f) + 0.5f;
+        _circularCentOffSetBar.fillAmount = (OctaveNote.FromFrequency(pitchDetector.rawPitch).cent / 50f) + 0.5f;
 
         if (recordingTimer >= recordTime)
         {
@@ -101,8 +101,6 @@ public class PitchCeilingCalibration : MonoBehaviour
     public void StartRecording()
     {
         if (isRecording) return; // Prevent starting if already recording
-        pitchDetector.isPitchZeroWhenNone = true;
-        
         isRecording = true;
         recordingTimer = 0f;
         calibratedMidiNum = 0;
@@ -125,7 +123,6 @@ public class PitchCeilingCalibration : MonoBehaviour
     {
         // Show that progress is done
         // Set min vocal range (in MIDI note number) based on calibrated note
-        pitchDetector.maxRange = calibratedMidiNum;
         // Check if there is at least one octave of range (Not just 12 semitones, but if C(N) to B(N) is included)
         // Update button state
         if (recordButton != null)
@@ -135,27 +132,26 @@ public class PitchCeilingCalibration : MonoBehaviour
         }
 
 
-        if (pitchDetector.octaveRange == -1)
-        {
-            _circularProgressBar.color = Color.red;
-            Debug.LogWarning($"Pitch ceiling calibration failed! Vocal range must cover at least one octave for Player {playerID}");
-            helperText.text = $"Calibration failed! Vocal range must cover at least one octave. Please try again.";
-        }
-        else
-        {
+        // if (pitchDetector.octaveRange == -1)
+        // {
+        //     _circularProgressBar.color = Color.red;
+        //     Debug.LogWarning($"Pitch ceiling calibration failed! Vocal range must cover at least one octave for Player {playerID}");
+        //     helperText.text = $"Calibration failed! Vocal range must cover at least one octave. Please try again.";
+        // }
+        // else
+        // {
 
-            isRecording = false;
-            pitchDetector.isPitchZeroWhenNone = true;
-            _circularProgressBar.color = Color.yellow;
-            Debug.Log($"Pitch ceiling calibration succeeded! Vocal range is {pitchDetector.octaveRange} octaves for Player {playerID}");
-            helperText.text = $"Calibration succeeded! Vocal range is octave #3 {pitchDetector.octaveRange}";
-        }
+        //     isRecording = false;
+        //     pitchDetector.isPitchZeroWhenNone = true;
+        //     _circularProgressBar.color = Color.yellow;
+        //     Debug.Log($"Pitch ceiling calibration succeeded! Vocal range is {pitchDetector.octaveRange} octaves for Player {playerID}");
+        //     helperText.text = $"Calibration succeeded! Vocal range is octave #3 {pitchDetector.octaveRange}";
+        // }
     }
     
     private void ResetRecording()
     {
         isRecording = false;
-        pitchDetector.isPitchZeroWhenNone = false;
         recordingTimer = 0f;
         calibratedMidiNum = 0;
         _circularProgressBar.fillAmount = 0f;

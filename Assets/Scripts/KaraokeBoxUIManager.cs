@@ -15,7 +15,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
     public TextMeshProUGUI lyricsText;
 
     private List<MidiNoteReader.NoteData> songNotes;
-    public SimplePitchDetector pitchDetector;
+    public PitchDetector pitchDetector;
     private RectTransform rectTransform;
     private RectTransform cursorRectTransform;
     private RectTransform lyricsRectTransform;
@@ -238,7 +238,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
     void UpdateCursorUI()
     {
-        float pitch = pitchDetector.shiftedPitch;
+        float pitch = pitchDetector.offsetDisplayPitch;
 
         // Clamp frequency to UI range
         float pitch_clamped = Mathf.Clamp(pitch, UIBotFrequency, UITopFrequency);
@@ -249,8 +249,9 @@ public class KaraokeBoxUIManager : MonoBehaviour
         float pitch_normalized = logPitch / logRange;
 
         // Now linear interpolate in UI space
-        float yPos = Mathf.Lerp(-214.4f, -116f, pitch_normalized);
-        cursorRectTransform.anchoredPosition = new Vector2(cursorRectTransform.anchoredPosition.x, yPos);
+        cursorRectTransform.pivot = new Vector2(0, pitch_normalized);
+        // float yPos = Mathf.Lerp(-214.4f, -116f, pitch_normalized);
+        // cursorRectTransform.anchoredPosition = new Vector2(cursorRectTransform.anchoredPosition.x, yPos);
     }
 
     void UpdateDamage()
@@ -263,7 +264,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
             
             float fUpper = fTarget * Mathf.Pow(2f, 1f / 12f);    // +1 semitone
             float fLower = fTarget / Mathf.Pow(2f, 1f / 12f);    // -1 semitone
-            float fInput = damageCalculator.pitchDetector.shiftedPitch;
+            float fInput = damageCalculator.pitchDetector.offsetDisplayPitch;
 
             if (fInput >= fLower && fInput <= fUpper)
             {

@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject settingsCanvasUI;
     [SerializeField] public int[] initialPlayerIDs = { 0, 1 };
-    public Dictionary<int, SimplePitchDetector> pitchDetectors = new Dictionary<int, SimplePitchDetector>();
+    public Dictionary<int, PitchDetector> pitchDetectors = new Dictionary<int, PitchDetector>();
     public Dictionary<int, GameObject> playerGameObjects = new Dictionary<int, GameObject>();
     private SongManager currSongManager;
     private int playerScore = 0;
@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
         playerObj.name = $"PitchDetector_Player{playerID}";
         DontDestroyOnLoad(playerObj);
 
-        SimplePitchDetector pitchDetector = playerObj.AddComponent<SimplePitchDetector>();
+        PitchDetector pitchDetector = playerObj.AddComponent<PitchDetector>();
 
         Instance.pitchDetectors[playerID] = pitchDetector;
         Instance.playerGameObjects[playerID] = playerObj;
@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour
         return true;
     }
     
-    public static SimplePitchDetector GetPitchDetection(int playerID)
+    public static PitchDetector GetPitchDetection(int playerID)
     {
         if (Instance == null)
         {
@@ -105,8 +105,8 @@ public class GameManager : MonoBehaviour
             return null;
         }
 
-        Debug.Log(Instance.pitchDetectors.TryGetValue(playerID, out SimplePitchDetector det) ? det : null);
-        return Instance.pitchDetectors.TryGetValue(playerID, out SimplePitchDetector detector) ? detector : null;
+        Debug.Log(Instance.pitchDetectors.TryGetValue(playerID, out PitchDetector det) ? det : null);
+        return Instance.pitchDetectors.TryGetValue(playerID, out PitchDetector detector) ? detector : null;
     }
 
     public static GameObject GetPlayerGameObject(int playerID)

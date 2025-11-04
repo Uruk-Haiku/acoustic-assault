@@ -16,7 +16,7 @@ public class NoiseCeilingCalibration : MonoBehaviour
     private int playerID;
     private bool isRecording = false;
     private float maxDB = float.MinValue;
-    private Lasp.SimplePitchDetector pitchDetector;
+    private Lasp.PitchDetector pitchDetector;
     
     void OnEnable()
     {
@@ -42,7 +42,7 @@ public class NoiseCeilingCalibration : MonoBehaviour
             return;
         }
 
-        float currentDB = pitchDetector.loudness;
+        float currentDB = pitchDetector.level;
 
         if (isRecording)
         {
