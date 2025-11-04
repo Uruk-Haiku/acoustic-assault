@@ -19,6 +19,8 @@ public class DamageCalculator : MonoBehaviour
     public UnityEngine.UI.Button damageButton;
     // Text element to show win message
     public TextMeshProUGUI winText;
+    // Script to change portraits on hit
+    public PortraitsChange portraitsChange;
 
     [Header("Damage bars")]
     // Damage bar is the bar that the player will build up while singing and goes to zero
@@ -116,6 +118,7 @@ public class DamageCalculator : MonoBehaviour
         }
         else
         {
+            portraitsChange.ChangePortraits(); // Change portraits on hit
             CheckWinning(); // Check if there's a winner before applying damage
             DoDamageToPlayer1();
             totalDamage2 += damageAccumulated2;
@@ -170,7 +173,7 @@ public class DamageCalculator : MonoBehaviour
                 //currentHealth1 = currentDamageSlider.value;
 
                 // Damage bar increase for player2
-                currentDamageBar.value = Mathf.Max(0, damageAccumulated1 / MaximumDamage * damageEffectMultiplier);
+                currentDamageBar.value = Mathf.Max(0, damageAccumulated2 / MaximumDamage * damageEffectMultiplier);
             }
             yield return new WaitForSeconds(damageCalculationInterval);
         }
