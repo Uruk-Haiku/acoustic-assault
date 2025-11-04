@@ -20,6 +20,13 @@ public class DamageCalculator : MonoBehaviour
     // Text element to show win message
     public TextMeshProUGUI winText;
 
+    [Header("Damage bars")]
+    // Damage bar is the bar that the player will build up while singing and goes to zero
+    // after the damage is applied every round
+    public UnityEngine.UI.Slider damageBar1;
+    public UnityEngine.UI.Slider damageBar2;
+    private UnityEngine.UI.Slider currentDamageBar;
+
     [Header("Loudness Settings")]
     // Whether to use loudness as a multiplier for damage
     [SerializeField] private bool applyLoundness = true;
@@ -83,6 +90,11 @@ public class DamageCalculator : MonoBehaviour
         damageSlider1.value = 1.0f;
         damageSlider2.value = 1.0f;
         currentDamageSlider = damageSlider2;
+
+        damageBar1.value = 0f;
+        damageBar2.value = 0f;
+        currentDamageBar = damageBar1;
+
         songTime = 0f;
         Player1Singing = true;
         gameEnded = false;
@@ -100,6 +112,7 @@ public class DamageCalculator : MonoBehaviour
         if (Player1Singing)
         {
             currentDamageSlider = damageSlider1;
+            currentDamageBar = damageBar2;
         }
         else
         {
@@ -112,6 +125,10 @@ public class DamageCalculator : MonoBehaviour
             totalDamage1 += damageAccumulated1;
             damageAccumulated1 = 0f; // Reset accumulated damage for next round
             currentDamageSlider = damageSlider2;
+
+            currentDamageBar = damageBar1;
+            damageBar1.value = 0f;
+            damageBar2.value = 0f;
         }
         Player1Singing = !Player1Singing;
     }
@@ -140,6 +157,9 @@ public class DamageCalculator : MonoBehaviour
                 //Debug.Log(damageAccumulated);
                 currentDamageSlider.value = Mathf.Max(0, (currentHealth2 - ((totalDamage1 + damageAccumulated1) / MaximumDamage) * damageEffectMultiplier));
                 //currentHealth2 = currentDamageSlider.value;
+
+                // Damage bar increase for player1
+                currentDamageBar.value = Mathf.Max(0, damageAccumulated1 / MaximumDamage * damageEffectMultiplier);
             }
             else
             {
@@ -148,6 +168,9 @@ public class DamageCalculator : MonoBehaviour
                 //Debug.Log(damageAccumulated);
                 currentDamageSlider.value = Mathf.Max(0, (currentHealth1 - ((totalDamage2 + damageAccumulated2) / MaximumDamage) * damageEffectMultiplier));
                 //currentHealth1 = currentDamageSlider.value;
+
+                // Damage bar increase for player2
+                currentDamageBar.value = Mathf.Max(0, damageAccumulated1 / MaximumDamage * damageEffectMultiplier);
             }
             yield return new WaitForSeconds(damageCalculationInterval);
         }
