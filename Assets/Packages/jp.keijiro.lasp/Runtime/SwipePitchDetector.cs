@@ -186,7 +186,7 @@ namespace Lasp
         InputStream _stream;
 
         // FFT buffer object with lazy initialization
-        FftBuffer Fft => _fft ?? (_fft = new FftBuffer(_resolution * 2));
+        FftBuffer Fft => _fft ?? (_fft = new FftBuffer(_resolution * 2, Stream.SampleRate));
         FftBuffer _fft;
 
         #endregion

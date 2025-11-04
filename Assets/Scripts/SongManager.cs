@@ -65,7 +65,6 @@ public class SongManager : MonoBehaviour
         if (isPlayingSong)
         {
             songTime += Time.deltaTime;
-            Debug.Log(songTime);
             if (timeStampIndex < timeStamps.Length && songTime >= timeStamps[timeStampIndex])
             {
                 currentPlayer = (currentPlayer == 1) ? 2 : 1;

@@ -198,8 +198,28 @@ public static class MidiNoteReader
     /// </summary>
     public static (int lowest, int highest) GetNoteRange(List<NoteData> notes)
     {
-        int lowest = notes.Min(n => n.note);
-        int highest = notes.Max(n => n.note);
+        int lowestP = 0;
+        int mP = 0;
+        int lowest = 1000;
+        int highest = 0;
+        // int lowest = notes.Min(n => n.note);
+        // int highest = notes.Max(n => n.note);
+        for (int i = 0; i < notes.Count; i++)
+        {
+            var n = notes[i];
+            if (n.note < lowest)
+            {
+                lowest = n.note;
+                lowestP = i;
+            }
+            if (n.note > highest)
+            {
+                highest = n.note;
+                mP = i;
+            }
+        }
+        Debug.Log($"lowest {lowestP}");
+        Debug.Log($"highest {mP}");
 
         return (lowest, highest);
     }

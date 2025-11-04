@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class KaraokeBoxUIManager : MonoBehaviour
 {
     /* A class that displays midi songs on a singing UI. Default is that the UI displays 12 beats at a time. */
+    public ParticleSystem uiParticles;
     public GameObject QuarterNote;
     public GameObject FirstChild;
     public GameObject Cursor;
@@ -14,7 +15,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
     public TextMeshProUGUI lyricsText;
 
     private List<MidiNoteReader.NoteData> songNotes;
-    public SimplePitchDetector pitchDetector;
+    public PitchDetector pitchDetector;
     private RectTransform rectTransform;
     private RectTransform cursorRectTransform;
     private RectTransform lyricsRectTransform;
@@ -156,6 +157,9 @@ public class KaraokeBoxUIManager : MonoBehaviour
     void Start()
     {
         MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath("IWantItThatWay/IWantItThatWay.mid");
+        var (lowest1, highest1) = MidiNoteReader.GetNoteRange(midiSong.notes);
+        Debug.Log(lowest1);
+        Debug.Log(highest1);
         songNotes = ShiftOctaves(midiSong.notes, 0);
         var (lowest, highest) = MidiNoteReader.GetNoteRange(songNotes);
         midiToY = BuildMidiToYMap(lowest, highest);
@@ -234,7 +238,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
     void UpdateCursorUI()
     {
-        float pitch = pitchDetector.shiftedPitch;
+        float pitch = pitchDetector.offsetDisplayPitch;
 
         // Clamp frequency to UI range
         float pitch_clamped = Mathf.Clamp(pitch, UIBotFrequency, UITopFrequency);
@@ -245,16 +249,45 @@ public class KaraokeBoxUIManager : MonoBehaviour
         float pitch_normalized = logPitch / logRange;
 
         // Now linear interpolate in UI space
-        float yPos = Mathf.Lerp(-214.4f, -116f, pitch_normalized);
-        cursorRectTransform.anchoredPosition = new Vector2(cursorRectTransform.anchoredPosition.x, yPos);
+        cursorRectTransform.pivot = new Vector2(0, pitch_normalized);
+        // float yPos = Mathf.Lerp(-214.4f, -116f, pitch_normalized);
+        // cursorRectTransform.anchoredPosition = new Vector2(cursorRectTransform.anchoredPosition.x, yPos);
     }
 
     void UpdateDamage()
     {
-        MidiNoteReader.NoteData? note = MidiNoteReader.GetNoteAtTime(songNotes, currSongTime + 0.29f * barDuration);
+        MidiNoteReader.NoteData? note = MidiNoteReader.GetNoteAtTime(songNotes, currSongTime + 0.297f * barDuration);
         if (note != null)
         {
-            damageCalculator.SetTargetFrequency(440f * Mathf.Pow(2f, (note.Value.note - 69f) / 12f));
+            float fTarget = 440f * Mathf.Pow(2f, (note.Value.note - 69f) / 12f);
+            damageCalculator.SetTargetFrequency(fTarget);
+            
+            float fUpper = fTarget * Mathf.Pow(2f, 1f / 12f);    // +1 semitone
+            float fLower = fTarget / Mathf.Pow(2f, 1f / 12f);    // -1 semitone
+            float fInput = damageCalculator.pitchDetector.offsetDisplayPitch;
+
+            if (fInput >= fLower && fInput <= fUpper)
+            {
+                // Compute how close we are in semitone space (0 = perfect, 1 = edge)
+                float diffSemitones = Mathf.Abs(12f * Mathf.Log(fInput / fTarget, 2f));
+                float t = Mathf.Clamp01(diffSemitones / 1f); // 0 to 1 semitone range
+                float rate = Mathf.Lerp(30f, 8f, t);
+                
+                Color finalColor = new Color(1f, 0.992f, 0.043f);
+                
+                var main = uiParticles.main;
+                main.startColor = finalColor;
+                
+                var emission = uiParticles.emission;
+                emission.rateOverTime = rate;
+
+                uiParticles.Play();
+            }
+            else
+            {
+                uiParticles.Stop();
+            }
+
         }
         else
         {
