@@ -199,7 +199,7 @@ MonoBehaviour:
   timeLength: 15
   timeStamps: []
   damageCalculationInterval: 0.05
-  damageEffectMultiplier: 0.8
+  damageEffectMultiplier: 0.3
 --- !u!4 &51320850
 Transform:
   m_ObjectHideFlags: 0
