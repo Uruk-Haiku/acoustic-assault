@@ -7314,7 +7314,7 @@ PrefabInstance:
       objectReference: {fileID: 1697526965}
     - target: {fileID: 5181317793222800749, guid: d256b2fd37073c345a9dc9edef8395e1, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5181317793222800749, guid: d256b2fd37073c345a9dc9edef8395e1, type: 3}
       propertyPath: selectedObjectManager
@@ -9593,6 +9593,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6139036388450433303, guid: 15e26c5348637314098e8b1780e0cfeb, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6425691932305584760, guid: 15e26c5348637314098e8b1780e0cfeb, type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
       value: 
@@ -9671,7 +9675,7 @@ PrefabInstance:
       objectReference: {fileID: 1697526965}
     - target: {fileID: 7195585626692149630, guid: 15e26c5348637314098e8b1780e0cfeb, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000005722046
+      value: 0.000015258789
       objectReference: {fileID: 0}
     - target: {fileID: 7673114026827866470, guid: 15e26c5348637314098e8b1780e0cfeb, type: 3}
       propertyPath: m_Enabled

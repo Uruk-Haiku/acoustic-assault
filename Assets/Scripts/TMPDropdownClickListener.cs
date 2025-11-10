@@ -12,10 +12,18 @@ public class TMPDropdownClickListener : MonoBehaviour
     void Start()
     {
         // When the dropdown is clicked, wait one frame to attach listeners
-        var button = dropdown.transform.GetChild(0).GetComponent<Button>();
-        button.onClick.AddListener(() => StartCoroutine(WatchDropdownItems()));
+        StartCoroutine(InitAfterFrame());
     }
 
+    IEnumerator InitAfterFrame()
+    {
+        yield return null; // wait one frame
+        var button = dropdown.GetComponentInChildren<Button>();
+        if (button != null)
+            button.onClick.AddListener(() => StartCoroutine(WatchDropdownItems()));
+        else
+            Debug.LogWarning("Button not found on dropdown!");
+    }
     private IEnumerator WatchDropdownItems()
     {
         // Wait for the dropdown list to be instantiated
