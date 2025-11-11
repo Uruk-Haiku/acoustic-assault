@@ -15,6 +15,7 @@ public class SelectedObjectManager : MonoBehaviour
     [SerializeField] private GameObject fs_PitchFloor;
     [SerializeField] private GameObject fs_PitchCeiling;
     [SerializeField] private GameObject fs_NextButton;
+    [SerializeField] private GameObject fs_OcativeSelection;
 
     private void Awake()
     {
@@ -51,6 +52,9 @@ public class SelectedObjectManager : MonoBehaviour
             case "NextButton":
                 StartCoroutine(SelectFirstButton(fs_NextButton));
                 break;
+            case "OcativeSelection":
+                StartCoroutine(SelectFirstButton(fs_OcativeSelection));
+                break;
             default:
                 Debug.LogWarning("No matching first selected object found for: " + objectName);
                 break;
@@ -61,13 +65,16 @@ public class SelectedObjectManager : MonoBehaviour
     {
         // Wait for a short period to let UIs fully initialize
 
-
         Debug.Log("Selecting button: " + selectedButton.name);
 
-        if (selectedButton != fs_NextButton) 
+        if (selectedButton != fs_MainMenu || selectedButton != fs_SelectLevel || selectedButton != fs_BaseSettings) 
         {
             yield return null;
-            yield return null;
+        }
+        else
+        {
+            // NextButton is on a different panel that takes longer to activate
+            yield return new WaitForSeconds(0.1f);
         }
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(selectedButton);

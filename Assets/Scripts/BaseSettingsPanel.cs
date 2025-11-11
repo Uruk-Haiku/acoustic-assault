@@ -1,18 +1,42 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class BaseSettingsPanel : MonoBehaviour
 {
     public TMP_Text title;
+    public GameObject settingsPanel;
+    public GameObject mainMenu;
+    public GameObject selectLevel;
+    public SelectedObjectManager selectedObjectManager;
+
+    private int dropdownIndex = 0;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
-    { 
+    {
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (EventSystem.current.currentSelectedGameObject == null)
+        {
+            if (settingsPanel.activeSelf)
+            {
+                switch (dropdownIndex)
+                {
+                    case 0:
+                        selectedObjectManager.SetSelectedObject("BaseSettings");
+                        break;
+                    case 1:
+                        selectedObjectManager.SetSelectedObject("OcativeSelection");
+                        break;
+                }
+                selectedObjectManager.SetSelectedObject("BaseSettings");
+            }
+        }
     }
     void OnEnable()
     {
@@ -20,5 +44,10 @@ public class BaseSettingsPanel : MonoBehaviour
         int playerID = settingsPanel.currentPlayer;
 
         title.SetText("Acoustic Assault Settings - Player " + settingsPanel.currentPlayer.ToString());
+    }
+
+    public void setDropdownIndex(int index)
+    {
+        dropdownIndex = index;
     }
 }
