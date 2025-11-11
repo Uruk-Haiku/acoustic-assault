@@ -1,6 +1,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SongManager : MonoBehaviour
 {
@@ -13,17 +14,18 @@ public class SongManager : MonoBehaviour
     public DamageCalculator damageCalculator;
     
     [Header("Time Before Song Starts")]
-    public float timeBeforeSongStarts = 2f;
+    public float timeBeforeSongStarts = 0f;
     
     [Header("Toggle Backing Track")]
     public bool playBackingTrack = false;
-    
+
     private AudioSource audioSourceBackingTrack;
+    private AudioSource audioSourceSfx;
 
     [SerializeField] private float[] timeStamps;
     private int timeStampIndex = 0;
 
-    private float songTime;
+    public float songTime;
     private bool isPlayingSong = false;
     
     public int currentPlayer = 1;
@@ -54,7 +56,9 @@ public class SongManager : MonoBehaviour
 
     void Start()
     {
-        audioSourceBackingTrack = GetComponent<AudioSource>();
+        AudioSource[] audioSources = GetComponents<AudioSource>();
+        audioSourceBackingTrack = audioSources[0];
+        audioSourceSfx = audioSources[1];
         songTime = -timeBeforeSongStarts;
         karaokeManager.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
         damageCalculator.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
@@ -72,6 +76,12 @@ public class SongManager : MonoBehaviour
                 // just pull the current player from the song manager
                 damageCalculator.SwitchPlayer();
                 karaokeManager.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
+                // Switch cursor image
+                Sprite cursorSprite = Resources.Load<Sprite>((currentPlayer == 1) ? "UI/LoudnessCursor (2)" : "UI/LoudnessCursor (1)");
+                if (cursorSprite != null)
+                {
+                    karaokeManager.Cursor.GetComponent<Image>().sprite = cursorSprite;
+                }
                 damageCalculator.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
                 timeStampIndex++;
             }
@@ -89,8 +99,8 @@ public class SongManager : MonoBehaviour
         //MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath($"/{song}/{song}.mid");
         string path = Path.Combine(Application.streamingAssetsPath, "Songs", "IWantItThatWay", $"{"IWantItThatWay"}.mid");
         MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath(path);
-        karaokeManager.StartPlaying(midiSong, -timeBeforeSongStarts);
-        damageCalculator.StartRecordingDamage(-timeBeforeSongStarts - 9f);
+        karaokeManager.StartPlaying(midiSong, 0);
+        damageCalculator.StartRecordingDamage();
         
         karaokeManager.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
         damageCalculator.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);

@@ -21,8 +21,6 @@ public class KaraokeBoxUIManager : MonoBehaviour
     private RectTransform lyricsRectTransform;
 
     private float barDuration;
-    private float currSongTime = -2f; // Starts 2 seconds before song starts to allow player to prepare
-    private float currSongLength = 0f;
     private float bpm;
     private bool isPlaying = false;
 
@@ -188,7 +186,6 @@ public class KaraokeBoxUIManager : MonoBehaviour
         if (isPlaying)
         {
             UpdateMusicUI();
-            currSongTime += Time.deltaTime;
             UpdateCursorUI();
             UpdateDamage();
         }
@@ -204,18 +201,32 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
         instantiatedNotes.Clear();
 
-        List<MidiNoteReader.NoteData> currentNotes = MidiNoteReader.GetNotesInTimeRange(
-            songNotes, currSongTime, currSongTime + barDuration);
 
-        float tStartLyrics = (9f - currSongTime) / barDuration;
-        lyricsRectTransform.anchoredPosition = new Vector2(-389.5f + tStartLyrics * 800f, lyricsRectTransform.anchoredPosition.y);
+        // This is the x offset since the cursor is not directly at the start of the karaoke box
+        // This is basically how many pixels the cursor image is off from the left most border
+        float baseCursorOffset = 75f;
+        // Whatever value we're adding here is the x Pos of the CursorBar Gameobject Hardcoding this for now.
+        float cursorOffset = baseCursorOffset + 80f;
+
+        // This is so that the notes that are technically "done" still show up after they pass the cursor.
+        // We want they notes to stay alive until they hit the left most side of the box, not after they pass the cursor
+        // We estimate that the distance between the left box border and the cursor is roughly 
+        // cursorOffset / boxWidth * barDuration
+        float cursorMusicOffset = cursorOffset / 800 * barDuration; 
+
+        // We make sure that the range we get includes the cursorMusicOffset
+        List<MidiNoteReader.NoteData> currentNotes = MidiNoteReader.GetNotesInTimeRange(
+            songNotes, SongManager.Instance.songTime - cursorMusicOffset, SongManager.Instance.songTime + barDuration);
+
+        float tStartLyrics = (9f - SongManager.Instance.songTime) / barDuration;
+        lyricsRectTransform.anchoredPosition = new Vector2(-389.5f + tStartLyrics * 800f + cursorOffset, lyricsRectTransform.anchoredPosition.y);
 
         foreach (var note in currentNotes)
         {
-            float tStart = (note.start - currSongTime) / barDuration;
+            float tStart = (note.start - SongManager.Instance.songTime) / barDuration;
 
             // Find where note should spawn in UI pixel space
-            float xStart = tStart * 800f;
+            float xStart = tStart * 800f + cursorOffset;
             float yOffset = midiToY[note.note];
 
             GameObject noteObj = Instantiate(QuarterNote, rectTransform);
@@ -256,7 +267,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
     void UpdateDamage()
     {
-        MidiNoteReader.NoteData? note = MidiNoteReader.GetNoteAtTime(songNotes, currSongTime + 0.297f * barDuration);
+        MidiNoteReader.NoteData? note = MidiNoteReader.GetNoteAtTime(songNotes, SongManager.Instance.songTime + 0.297f * barDuration);
         if (note != null)
         {
             float fTarget = 440f * Mathf.Pow(2f, (note.Value.note - 69f) / 12f);
@@ -295,13 +306,11 @@ public class KaraokeBoxUIManager : MonoBehaviour
         }
     }
 
-
     public void StartPlaying(MidiNoteReader.MidiSong midiSong, float timeBeforeSongStarts)
     {
         bpm = midiSong.bpm;
         isPlaying = true;
-        currSongLength = midiSong.length;
         barDuration = 60.0f / bpm * 12f;
-        currSongTime = timeBeforeSongStarts - 0.297f * barDuration;
+        SongManager.Instance.songTime = timeBeforeSongStarts - 0.297f * barDuration;
     }
 }
