@@ -13,7 +13,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] public int[] initialPlayerIDs = { 0, 1 };
     public Dictionary<int, PitchDetector> pitchDetectors = new Dictionary<int, PitchDetector>();
     public Dictionary<int, GameObject> playerGameObjects = new Dictionary<int, GameObject>();
-    private SongManager currSongManager;
     private int playerScore = 0;
 
     void Awake()
@@ -159,19 +158,21 @@ public class GameManager : MonoBehaviour
         //     startButton.onClick.AddListener(Instance.StartGame);
         // }
 
-
-        currSongManager = GameObject.Find("SongManager")?.GetComponent<SongManager>();
-        currSongManager.damageCalculator =  GameObject.Find("DamageCalculator")?.GetComponent<DamageCalculator>();
-        currSongManager.karaokeManager = GameObject.Find("KaraokeBox")?.GetComponent<KaraokeBoxUIManager>();
-        Instance.StartGame();
-
+        if (scene.name.StartsWith("Level"))
+        {
+            char lastChar = scene.name[^1];
+            int levelNum = lastChar - '0';
+            SongManager.Instance.damageCalculator =  GameObject.Find("DamageCalculator")?.GetComponent<DamageCalculator>();
+            SongManager.Instance.karaokeManager = GameObject.Find("KaraokeBox")?.GetComponent<KaraokeBoxUIManager>();
+            Instance.StartGame(levelNum);
+        }
     }
-    public void StartGame()
+    public void StartGame(int levelNum)
     {
-        StartCoroutine(StartGameCoroutine());
+        StartCoroutine(StartGameCoroutine(levelNum));
     }
 
-    IEnumerator StartGameCoroutine()
+    IEnumerator StartGameCoroutine(int levelNum)
     {
         GameObject mainCamera = GameObject.Find("Main Camera");
         Animator animator = mainCamera.GetComponent<Animator>();
@@ -184,17 +185,17 @@ public class GameManager : MonoBehaviour
         {
             yield return StartCoroutine(EaseInCanvas(canvasGroup));
         }
-        currSongManager.StartSong();
+        SongManager.Instance.StartSong(levelNum);
     }
 
     public static void PauseGame()
     {
-        Instance?.currSongManager?.PauseSong();
+        SongManager.Instance?.PauseSong();
     }
 
     public static void UnPauseGame()
     {
-        Instance?.currSongManager?.UnPauseSong();
+        SongManager.Instance?.UnPauseSong();
     }
     
     IEnumerator EaseInCanvas(CanvasGroup canvasGroup)

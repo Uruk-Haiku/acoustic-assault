@@ -16,6 +16,9 @@ public class MenuManager : MonoBehaviour
     // Level Buttons
     public Button level1Button;
     public string level1SceneName;
+    
+    public Button level2Button;
+    public string level2SceneName;
 
     public SelectedObjectManager selectedObjectManager;
 
@@ -26,6 +29,7 @@ public class MenuManager : MonoBehaviour
         quitButton.onClick.AddListener(() => Application.Quit());
         backButton.onClick.AddListener(() => ShowPanel(mainMenuPanel));
         level1Button.onClick.AddListener(() => GameManager.LoadScene(level1SceneName));
+        level2Button.onClick.AddListener(() => GameManager.LoadScene(level2SceneName));
 
         // Show main menu by default
         ShowPanel(mainMenuPanel);

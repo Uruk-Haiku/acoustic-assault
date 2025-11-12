@@ -85,7 +85,7 @@ public class SettingsManager : MonoBehaviour
             {
                 CheckBackGroundMenu();
             }
-            else if (SceneManager.GetActiveScene().name == "SingingUI")
+            else if (SceneManager.GetActiveScene().name == "Level1")
             {
                 menuUIController = FindAnyObjectByType<MenuUIController>();
                 if (menuUIController != null)
