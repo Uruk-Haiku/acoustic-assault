@@ -275,8 +275,6 @@ MonoBehaviour:
   timeStamps: []
   damageCalculationInterval: 0.05
   damageEffectMultiplier: 0.3
-  currPlayerSingingTime: 0
-  currPlayerSparkleTime: 0
 --- !u!4 &51320850
 Transform:
   m_ObjectHideFlags: 0
@@ -326,7 +324,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 6.08}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -2.8499985, y: -1.34}
+  m_AnchoredPosition: {x: -2.8499985, y: -1.3399963}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &111028885
@@ -4226,7 +4224,7 @@ CanvasGroup:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 203696226}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 0
@@ -5059,12 +5057,12 @@ GameObject:
   - component: {fileID: 662929471}
   - component: {fileID: 662929470}
   m_Layer: 5
-  m_Name: Bubble1
+  m_Name: Bubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &662929469
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5074,7 +5072,7 @@ RectTransform:
   m_GameObject: {fileID: 662929468}
   m_LocalRotation: {x: -0, y: -0, z: -0.1103415, w: 0.9938938}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.0112907, y: 1, z: 1.0118988}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3028164}
@@ -5508,7 +5506,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &781247276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8016,7 +8014,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SongManager
   karaokeManager: {fileID: 1725128429}
   damageCalculator: {fileID: 51320849}
-  timeBeforeSongStarts: 2
   playBackingTrack: 1
   timeStamps:
   - 28
@@ -8061,6 +8058,9 @@ MonoBehaviour:
   - 201.3
   songTime: 0
   currentPlayer: 1
+  currentEmotionList: 
+  emotionScoreList: []
+  timeToGetPerfectScoreList: []
 --- !u!1 &1053361836
 GameObject:
   m_ObjectHideFlags: 0
@@ -21409,18 +21409,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1013634041}
-        m_TargetAssemblyTypeName: SongManager, Assembly-CSharp
-        m_MethodName: StartSong
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: IWantItThatWay
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 535903275}
         m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
         m_MethodName: SetTrigger
@@ -21873,6 +21861,7 @@ MonoBehaviour:
   damageCalculator: {fileID: 51320849}
   lyricsText: {fileID: 1827439980}
   pitchDetector: {fileID: 0}
+  isSparkling: 0
 --- !u!4 &1738189550 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f8be81e085b1c4a7791a2a98abe11f90, type: 3}
@@ -25236,6 +25225,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5057464720753094260, guid: 22c8200e1a21d4f4daf0b58dd1b39f42, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5184008787682526109, guid: 22c8200e1a21d4f4daf0b58dd1b39f42, type: 3}
       propertyPath: m_Name
       value: HealthBars
@@ -25349,12 +25342,13 @@ MonoBehaviour:
   pinkBird_hit: {fileID: 9007375870025834747}
   greenBird: {fileID: 9007375870025834746}
   greenBird_hit: {fileID: 9007375870025834745}
-  greenBirdGreatPopup: {fileID: 0}
-  greenBirdGoodPopup: {fileID: 0}
-  greenBirdBadPopup: {fileID: 0}
-  pinkBirdGreatPopup: {fileID: 0}
-  pinkBirdGoodPopup: {fileID: 0}
-  pinkBirdBadPopup: {fileID: 0}
+  popupBubble: {fileID: 662929468}
+  greenBirdGreatPopup: {fileID: 742526397}
+  greenBirdGoodPopup: {fileID: 1053361836}
+  greenBirdBadPopup: {fileID: 1986628052}
+  pinkBirdGreatPopup: {fileID: 3028163}
+  pinkBirdGoodPopup: {fileID: 739830676}
+  pinkBirdBadPopup: {fileID: 111028883}
   changeDuration: 1
   shakeDuration: 0.5
   shakeIntensity: 10

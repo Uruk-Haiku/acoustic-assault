@@ -140,7 +140,6 @@ public class DamageCalculator : MonoBehaviour
         {
             return;
         }
-        songTime += Time.deltaTime;
     }
     private IEnumerator DamageRoutine()
     {
