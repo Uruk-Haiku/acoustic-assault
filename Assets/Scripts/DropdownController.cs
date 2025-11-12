@@ -7,6 +7,10 @@ public class DropdownController : MonoBehaviour
     [SerializeField] private TMP_Dropdown dropdown;
     public SelectedObjectManager selectedObjectManager;
 
+    [SerializeField] private int dropdownIndex; // 0 for device selection, 1 for ocative selection
+
+    public BaseSettingsPanel baseSettingsPanel;
+
     private void Awake()
     {
         dropdown.onValueChanged.AddListener(OnValueChanged);
@@ -16,6 +20,7 @@ public class DropdownController : MonoBehaviour
     {
         // Wait a frame because TMP spawns its dropdown list after Show() is called
         Debug.Log("Dropdown clicked, waiting to select first option...");
+        baseSettingsPanel.setDropdownIndex(dropdownIndex);
         StartCoroutine(SelectFirstOptionNextFrame());
     }
 

@@ -153,15 +153,14 @@ public class GameManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log(scene.buildIndex);
+        currSongManager = GameObject.Find("SongManager")?.GetComponent<SongManager>();
         Button startButton = GameObject.Find("StartSong")?.GetComponent<Button>();
         if (startButton != null)
         {
             startButton.onClick.AddListener(Instance.StartGame);
+            currSongManager.damageCalculator =  GameObject.Find("DamageCalculator")?.GetComponent<DamageCalculator>();
+            currSongManager.karaokeManager = GameObject.Find("KaraokeBox")?.GetComponent<KaraokeBoxUIManager>();
         }
-
-        currSongManager = GameObject.Find("SongManager")?.GetComponent<SongManager>();
-        currSongManager.damageCalculator =  GameObject.Find("DamageCalculator")?.GetComponent<DamageCalculator>();
-        currSongManager.karaokeManager = GameObject.Find("KaraokeBox")?.GetComponent<KaraokeBoxUIManager>();
     }
     public void StartGame()
     {
