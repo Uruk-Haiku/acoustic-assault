@@ -46,10 +46,10 @@ public class OcativeSelecter : MonoBehaviour
                 pitchDetector.pitchOffsetInSemitones = 12;
                 break;
             case 1:
-                pitchDetector.pitchOffsetInSemitones = 0;
+                pitchDetector.pitchOffsetInSemitones = 24;
                 break;
             case 2:
-                pitchDetector.pitchOffsetInSemitones = -12;
+                pitchDetector.pitchOffsetInSemitones = 0;
                 break;
         }
         Debug.Log("Ocative selected: " + pitchDetector.pitchOffsetInSemitones);

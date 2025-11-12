@@ -36,7 +36,7 @@ namespace Lasp
         [SerializeField, Range(200, 1500)] float maxFrequency = 1000;
         [SerializeField, Range(50, 300)] float minRange = 60; // C3 (in MIDI note number)
         [SerializeField, Range(200, 1500)] float maxRange = 72; // C4 in MIDI note number
-        [SerializeField] public int pitchOffsetInSemitones = 0;
+        [SerializeField] public int pitchOffsetInSemitones = 12;
 
         // Peak detection parameters
         [SerializeField, Range(0.01f, 1f)] float threshold = 0.90f;
