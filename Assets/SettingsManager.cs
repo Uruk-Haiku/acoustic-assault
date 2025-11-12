@@ -80,6 +80,7 @@ public class SettingsManager : MonoBehaviour
     {
         if (settingsCanvasUI.activeSelf)
         {
+            GameManager.UnPauseGame();
             settingsCanvasUI.SetActive(false);
             if (SceneManager.GetActiveScene().name == "MenuScreen")
             {
