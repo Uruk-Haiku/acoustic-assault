@@ -8,7 +8,16 @@ using System.Collections.Generic;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    public GameObject mainCamera;
+    public GameObject winLoseCamera;
+    public GameObject canvasObj;
 
+    public GameObject pinkIdle;
+    public GameObject pinkWin;
+    public GameObject pinkLose;
+    public GameObject greenIdle;
+    public GameObject greenWin;
+    public GameObject greenLose;
     public GameObject settingsCanvasUI;
     [SerializeField] public int[] initialPlayerIDs = { 0, 1 };
     public Dictionary<int, PitchDetector> pitchDetectors = new Dictionary<int, PitchDetector>();
@@ -158,6 +167,22 @@ public class GameManager : MonoBehaviour
         //     startButton.onClick.AddListener(Instance.StartGame);
         // }
 
+        // Find all relevant objects
+        canvasObj = GameObject.Find("Canvas");
+        mainCamera = GameObject.Find("Main Camera");
+        winLoseCamera = GameObject.Find("Win Lose Camera");
+        pinkIdle = GameObject.Find("pink_birb_idle");
+        pinkWin = GameObject.Find("Pink_birb_win");
+        pinkLose = GameObject.Find("Pink_birb_lose");
+        greenIdle = GameObject.Find("green_birb_idle");
+        greenWin = GameObject.Find("Green_birb_win");
+        greenLose = GameObject.Find("Green_birb_lose");
+        winLoseCamera.SetActive(false);
+        pinkWin.SetActive(false);
+        pinkLose.SetActive(false);
+        greenWin.SetActive(false);
+        greenLose.SetActive(false);
+
         if (scene.name.StartsWith("Level"))
         {
             char lastChar = scene.name[^1];
@@ -190,10 +215,11 @@ public class GameManager : MonoBehaviour
 
     IEnumerator StartGameCoroutine(int levelNum)
     {
-        GameObject mainCamera = GameObject.Find("Main Camera");
+
+        mainCamera.SetActive(true);
+        winLoseCamera.SetActive(false);
         Animator animator = mainCamera.GetComponent<Animator>();
         animator.SetTrigger("StartAnim");
-        GameObject canvasObj = GameObject.Find("Canvas");
         GameObject startScreen = GameObject.Find("StartScreen");
         CanvasGroup canvasGroup = canvasObj.GetComponent<CanvasGroup>();
         startScreen.SetActive(false);
