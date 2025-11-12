@@ -1,6 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,12 +26,13 @@ public class SongManager : MonoBehaviour
 
     [SerializeField] private float[] timeStamps1;
     [SerializeField] private float[] timeStamps2;
-    
+
     private float[] timeStamps;
     private int timeStampIndex = 0;
 
     public float songTime;
     private bool isPlayingSong = false;
+    public bool isLevelFinished = false;
 
     public int currentPlayer = 1;
 
@@ -80,19 +83,7 @@ public class SongManager : MonoBehaviour
     {
         AudioSource[] audioSources = GetComponents<AudioSource>();
         audioSourceBackingTrack = audioSources[0];
-        // audioSourceSfx = audioSources[1];
-
-        // for (int i = 0; i < 2; i++) {
-        //     currentEmotionList.Add(EmotionScore.Good);
-        //     emotionScoreList.Add(0);
-        //     timeToGetPerfectScoreList.Add(0);
-        //     // currentEmotionList = new List<EmotionScore> { EmotionScore.Good, EmotionScore.Good };
-        //     // emotionScoreList = new List<float> { 0, 0 };
-        //     // timeToGetPerfectScoreList = new List<float> { 0, 0 };
-        // }
-        // currentEmotionList = new List<EmotionScore> { EmotionScore.Good, EmotionScore.Good };
-        // emotionScoreList = new List<float> { 0, 0 };
-        // timeToGetPerfectScoreList = new List<float> { 0, 0 };
+        audioSourceSfx = audioSources[1];
     }
 
     void Update()
@@ -123,11 +114,61 @@ public class SongManager : MonoBehaviour
                 emotionScoreList[currentPlayer - 1] += 0.5f * timeToGetPerfectScore;
             }
 
-            if (timeStampIndex >= timeStamps.Length)
+            if (!isLevelFinished && (timeStampIndex >= timeStamps.Length || damageCalculator.isGameOver))
             {
-                damageCalculator.EndGame();
+                isLevelFinished = true;
+                GameManager.Instance.canvasObj.SetActive(false);
+                int winResult = damageCalculator.gameEndState;
+                // damageCalculator.ShowWinningMessage(damageCalculator.gameEndState);
+                // turn off song
+                audioSourceBackingTrack.Stop();
+                // turn on sound
+                audioSourceSfx.Play();
+                // switchCamera
+                GameManager.Instance.mainCamera.SetActive(false);
+                GameManager.Instance.winLoseCamera.SetActive(true);
+
+                GameManager.Instance.greenIdle.SetActive(false);
+                GameManager.Instance.pinkIdle.SetActive(false);
+                if (winResult == 0)
+                {
+                    GameManager.Instance.greenWin.SetActive(true);
+                    GameManager.Instance.pinkWin.SetActive(true);
+                    // TODO: fix this
+                    TMP_Text winText = GameObject.Find("WinText").GetComponent<TMP_Text>();
+                    winText.text = "It's a Tie!";
+                }
+                else if (winResult == 1)
+                {
+                    GameManager.Instance.greenLose.SetActive(true);
+                    GameManager.Instance.pinkWin.SetActive(true);
+
+                    TMP_Text winText = GameObject.Find("WinText").GetComponent<TMP_Text>();
+                    winText.text = "Player 1 Wins!";
+                }
+                else if (winResult == 2)
+                {
+                    GameManager.Instance.greenWin.SetActive(true);
+                    GameManager.Instance.pinkLose.SetActive(true);
+                    TMP_Text winText = GameObject.Find("WinText").GetComponent<TMP_Text>();
+                    winText.text = "Player 2 Wins!";
+
+                }
+                StartCoroutine(ExitToMainMenu());
             }
         }
+    }
+
+    IEnumerator ExitToMainMenu()
+    {
+        yield return new WaitForSeconds(10);
+        audioSourceSfx.Stop();
+        isPlayingSong = false;
+        damageCalculator.startRecording = false;
+        songTime = 0;
+        timeStampIndex = 0;
+        SongManager.Instance.EndSong();
+        GameManager.LoadScene("MenuScreen");
     }
 
     public void StartSong(int levelNum)
@@ -141,15 +182,15 @@ public class SongManager : MonoBehaviour
         else if (levelNum == 2)
         {
             timeStamps = timeStamps2;
-            song =  "AllIWantForChristmas";
+            song = "AllIWantForChristmas";
         }
-        
+
         Debug.Log(song);
-        
+
         songTime = 0;
         timeStampIndex = 0;
         isPlayingSong = true;
-        
+
         karaokeManager.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
         damageCalculator.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
 
@@ -165,7 +206,9 @@ public class SongManager : MonoBehaviour
             audioSourceBackingTrack.clip = clip;
             audioSourceBackingTrack.PlayDelayed(0);
         }
-        
+
+        // Load sfx
+
         MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath(song);
         if (levelNum == 1)
         {
@@ -181,7 +224,8 @@ public class SongManager : MonoBehaviour
         karaokeManager.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
         damageCalculator.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++)
+        {
             currentEmotionList.Add(EmotionScore.Good);
             emotionScoreList.Add(0);
             timeToGetPerfectScoreList.Add(0);
@@ -194,6 +238,8 @@ public class SongManager : MonoBehaviour
         // Init values for first player
         timeToGetPerfectScoreList[0] = timeStamps[timeStampIndex];
         emotionScoreList[0] = 0.5f * timeToGetPerfectScoreList[0];
+
+        isLevelFinished = false;
     }
 
     public void EndSong()
@@ -201,9 +247,6 @@ public class SongManager : MonoBehaviour
         audioSourceBackingTrack.Stop();
         audioSourceBackingTrack.time = 0f;
         audioSourceBackingTrack.clip = null;
-        isPlayingSong = false;
-        songTime = 0;
-        timeStampIndex = 0;
     }
 
     public void PauseSong()
@@ -226,6 +269,10 @@ public class SongManager : MonoBehaviour
     }
     void updatePopup()
     {
+        if (karaokeManager.isNullNote)
+        {
+            return;
+        }
         // Only apply decay when decreasing (target is lower than current)
         if (karaokeManager.isSparkling)
         {

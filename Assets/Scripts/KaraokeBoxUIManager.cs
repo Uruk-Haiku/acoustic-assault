@@ -19,12 +19,14 @@ public class KaraokeBoxUIManager : MonoBehaviour
     private RectTransform rectTransform;
     private RectTransform cursorRectTransform;
     private RectTransform lyricsRectTransform;
+    public RectTransform popupBubbleRectTransform;
 
     private float barDuration;
     private float timeBeforeSongStarts;
     private float bpm;
     private bool isPlaying = false;
     public bool isSparkling = false;
+    public bool isNullNote = true;
 
     private float UITopFrequency;
     private float UIBotFrequency;
@@ -255,6 +257,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
         MidiNoteReader.NoteData? note = MidiNoteReader.GetNoteAtTime(songNotes, SongManager.Instance.songTime);
         if (note != null)
         {
+            isNullNote = false;
             float fTarget = 440f * Mathf.Pow(2f, (note.Value.note - 69f) / 12f);
             damageCalculator.SetTargetFrequency(fTarget);
             
@@ -291,7 +294,10 @@ public class KaraokeBoxUIManager : MonoBehaviour
         }
         else
         {
+            isSparkling = false;
+            uiParticles.Stop();
             damageCalculator.SetTargetFrequency(0f);
+            isNullNote = true;
         }
     }
 

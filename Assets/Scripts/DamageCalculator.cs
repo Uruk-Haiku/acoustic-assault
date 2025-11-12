@@ -18,8 +18,6 @@ public class DamageCalculator : MonoBehaviour
     // Button that does damage when pressed
     public UnityEngine.UI.Button damageButton;
     // Text element to show win message
-    public TextMeshProUGUI winText;
-    // Script to change portraits on hit
     public PortraitsChange portraitsChange;
 
     [Header("Damage bars")]
@@ -58,8 +56,10 @@ public class DamageCalculator : MonoBehaviour
     private float totalDamage1 = 0f;
     private float totalDamage2 = 0f;
 
-    private float currentHealth1 = 1.00f;
-    private float currentHealth2 = 1.0f;
+    public float currentHealth1 = 1f;
+    public float currentHealth2 = 1f;
+    public bool isGameOver = false;
+    public int gameEndState = 0;
 
     // How often to calculate damage (in seconds)
     [SerializeField] private float damageCalculationInterval = 0.05f;
@@ -72,7 +72,7 @@ public class DamageCalculator : MonoBehaviour
 
     private bool gameEnded = false;
 
-    private bool startRecording = false;
+    public bool startRecording = false;
 
     void Awake()
     {
@@ -225,73 +225,24 @@ public class DamageCalculator : MonoBehaviour
 
     private void CheckWinning()
     {
-        if (damageSlider1.value <= 0 && damageSlider2.value <= 0)
+        if (damageSlider1.value < 0.1 && damageSlider2.value < 0.1)
         {
-            if (damageAccumulated1 > damageAccumulated2)
-            {
-                ShowWinningMessage(1);
-            }
-            else if (damageAccumulated2 > damageAccumulated1)
-            {
-                ShowWinningMessage(2);
-            }
-            else
-            {
-                ShowWinningMessage(0); // Draw
-            }
+            isGameOver = true;
+            gameEndState = 0;
+            return;
         }
-        else if (damageSlider1.value <= 0)
+        if (damageSlider2.value < 0.1)
         {
-            ShowWinningMessage(2);
-        }
-        else if (damageSlider2.value <= 0)
-        {
-            ShowWinningMessage(1);
-        }
-    }
-
-    public void EndGame()
-    {
-        if (gameEnded) return;
-        if (healthSlider1.value > healthSlider2.value)
-        {
-            ShowWinningMessage(1);
-        }
-        else if (healthSlider2.value > healthSlider1.value)
-        {
-            ShowWinningMessage(2);
-        }
-        else
-        {
-            ShowWinningMessage(0); // Draw
-        }
-    }
-
-    public void ShowWinningMessage(int winningPlayer)
-    {
-        switch(winningPlayer)
-        {
-            case 0:
-                winText.text = "It's a Draw!";
-                gameEnded = true;
-                break;
-            case 1:
-                winText.text = "Player 1 Wins!";
-                gameEnded = true;
-                break;
-            case 2:
-                winText.text = "Player 2 Wins!";
-                gameEnded = true;
-                break;
+                isGameOver = true;
+                gameEndState = 1;
+            return;
         }
 
-        StartCoroutine(ExitToMainMenu());
-    }
-
-    IEnumerator ExitToMainMenu()
-    {
-        yield return new WaitForSeconds(5);
-        SongManager.Instance.EndSong();
-        GameManager.LoadScene("MenuScreen");
+        if (damageSlider2.value < 0.1)
+        {
+                isGameOver = true;
+                gameEndState = 2;
+            return;
+        }
     }
 }

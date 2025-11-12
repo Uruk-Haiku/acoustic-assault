@@ -37,6 +37,7 @@ namespace Lasp
         [SerializeField, Range(50, 300)] float minRange = 60; // C3 (in MIDI note number)
         [SerializeField, Range(200, 1500)] float maxRange = 72; // C4 in MIDI note number
         [SerializeField] public int pitchOffsetInSemitones = 12;
+        [SerializeField] public int songSpecificOffsetInSemitones = 0;
 
         // Peak detection parameters
         [SerializeField, Range(0.01f, 1f)] float threshold = 0.90f;
@@ -59,7 +60,7 @@ namespace Lasp
         public float rawPitch = 0;
         public float displayPitch = 0;
 
-        public float offsetDisplayPitch => displayPitch * math.pow(2f, pitchOffsetInSemitones / 12f);
+        public float offsetDisplayPitch => displayPitch * math.pow(2f, (pitchOffsetInSemitones + songSpecificOffsetInSemitones) / 12f);
         public float confidence = 0;
 
         #endregion
