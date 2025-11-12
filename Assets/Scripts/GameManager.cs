@@ -167,25 +167,25 @@ public class GameManager : MonoBehaviour
         //     startButton.onClick.AddListener(Instance.StartGame);
         // }
 
-        // Find all relevant objects
-        canvasObj = GameObject.Find("Canvas");
-        mainCamera = GameObject.Find("Main Camera");
-        winLoseCamera = GameObject.Find("Win Lose Camera");
-        pinkIdle = GameObject.Find("pink_birb_idle");
-        pinkWin = GameObject.Find("Pink_birb_win");
-        pinkLose = GameObject.Find("Pink_birb_lose");
-        greenIdle = GameObject.Find("green_birb_idle");
-        greenWin = GameObject.Find("Green_birb_win");
-        greenLose = GameObject.Find("Green_birb_lose");
-        winLoseCamera.SetActive(false);
-        pinkWin.SetActive(false);
-        pinkLose.SetActive(false);
-        greenWin.SetActive(false);
-        greenLose.SetActive(false);
+
 
         if (scene.name.StartsWith("Level"))
         {
-            char lastChar = scene.name[^1];
+            // Find all relevant objects
+            canvasObj = GameObject.Find("Canvas");
+            mainCamera = GameObject.Find("Main Camera");
+            winLoseCamera = GameObject.Find("Win Lose Camera");
+            pinkIdle = GameObject.Find("pink_birb_idle");
+            pinkWin = GameObject.Find("Pink_birb_win");
+            pinkLose = GameObject.Find("Pink_birb_lose");
+            greenIdle = GameObject.Find("green_birb_idle");
+            greenWin = GameObject.Find("Green_birb_win");
+            greenLose = GameObject.Find("Green_birb_lose");
+            winLoseCamera.SetActive(false);
+            pinkWin.SetActive(false);
+            pinkLose.SetActive(false);
+            greenWin.SetActive(false);
+            greenLose.SetActive(false);            char lastChar = scene.name[^1];
             int levelNum = lastChar - '0';
 
             // TODO: hardcoding level 2 (All I want for christmas) to set an additional pitch offset of 1 octave

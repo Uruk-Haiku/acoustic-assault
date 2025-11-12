@@ -5050,8 +5050,8 @@ MonoBehaviour:
   maxDamageMultiplier: 1
   timeLength: 15
   timeStamps: []
-  currentHealth1: 0.2
-  currentHealth2: 0.2
+  currentHealth1: 1
+  currentHealth2: 1
   isGameOver: 0
   gameEndState: 0
   damageCalculationInterval: 0.05

@@ -43,9 +43,9 @@ namespace Lasp
         [SerializeField, Range(0.01f, 1f)] float threshold = 0.90f;
 
         // Manual input gain (only used when auto gain is off)
-        [SerializeField, Range(-10, 120)] public float gain = 0;
+        [SerializeField, Range(-10, 120)] public float gain = 15;
         // Dynamic range in dB
-        [SerializeField, Range(1, 120)] public float dynamicRange = 80;
+        [SerializeField, Range(1, 120)] public float dynamicRange = 45;
         // Smoothing
         [SerializeField, Range(0f, 0.95f)] float smoothingStrength = 0.8f;
         [SerializeField, Range(0f, 1f)] float snapStrength = 0.5f;
