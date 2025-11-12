@@ -23,9 +23,12 @@ public class KaraokeBoxUIManager : MonoBehaviour
     private float barDuration;
     private float bpm;
     private bool isPlaying = false;
+    public bool isSparkling = false;
 
     private float UITopFrequency;
     private float UIBotFrequency;
+
+    private float cursorMusicOffset;
 
     private List<GameObject> instantiatedNotes = new List<GameObject>();
 
@@ -212,7 +215,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
         // We want they notes to stay alive until they hit the left most side of the box, not after they pass the cursor
         // We estimate that the distance between the left box border and the cursor is roughly 
         // cursorOffset / boxWidth * barDuration
-        float cursorMusicOffset = cursorOffset / 800 * barDuration; 
+        cursorMusicOffset = cursorOffset / 800 * barDuration; 
 
         // We make sure that the range we get includes the cursorMusicOffset
         List<MidiNoteReader.NoteData> currentNotes = MidiNoteReader.GetNotesInTimeRange(
@@ -267,7 +270,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
     void UpdateDamage()
     {
-        MidiNoteReader.NoteData? note = MidiNoteReader.GetNoteAtTime(songNotes, SongManager.Instance.songTime + 0.297f * barDuration);
+        MidiNoteReader.NoteData? note = MidiNoteReader.GetNoteAtTime(songNotes, SongManager.Instance.songTime);
         if (note != null)
         {
             float fTarget = 440f * Mathf.Pow(2f, (note.Value.note - 69f) / 12f);
@@ -292,10 +295,14 @@ public class KaraokeBoxUIManager : MonoBehaviour
                 var emission = uiParticles.emission;
                 emission.rateOverTime = rate;
 
+                isSparkling = true;
+
                 uiParticles.Play();
             }
             else
             {
+
+                isSparkling = false;
                 uiParticles.Stop();
             }
 
@@ -311,6 +318,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
         bpm = midiSong.bpm;
         isPlaying = true;
         barDuration = 60.0f / bpm * 12f;
-        SongManager.Instance.songTime = timeBeforeSongStarts - 0.297f * barDuration;
+        // SongManager.Instance.songTime = timeBeforeSongStarts - 0.297f * barDuration;
+        // print("Hi"+SongManager.Instance.songTime);
     }
 }

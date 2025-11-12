@@ -153,26 +153,38 @@ public class GameManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log(scene.buildIndex);
+        // Button startButton = GameObject.Find("StartSong")?.GetComponent<Button>();
+        // if (startButton != null)
+        // {
+        //     startButton.onClick.AddListener(Instance.StartGame);
+        // }
+
+
         currSongManager = GameObject.Find("SongManager")?.GetComponent<SongManager>();
-        Button startButton = GameObject.Find("StartSong")?.GetComponent<Button>();
-        if (startButton != null)
-        {
-            startButton.onClick.AddListener(Instance.StartGame);
-            currSongManager.damageCalculator =  GameObject.Find("DamageCalculator")?.GetComponent<DamageCalculator>();
-            currSongManager.karaokeManager = GameObject.Find("KaraokeBox")?.GetComponent<KaraokeBoxUIManager>();
-        }
+        currSongManager.damageCalculator =  GameObject.Find("DamageCalculator")?.GetComponent<DamageCalculator>();
+        currSongManager.karaokeManager = GameObject.Find("KaraokeBox")?.GetComponent<KaraokeBoxUIManager>();
+        Instance.StartGame();
+
     }
     public void StartGame()
     {
+        StartCoroutine(StartGameCoroutine());
+    }
+
+    IEnumerator StartGameCoroutine()
+    {
+        GameObject mainCamera = GameObject.Find("Main Camera");
+        Animator animator = mainCamera.GetComponent<Animator>();
+        animator.SetTrigger("StartAnim");
         GameObject canvasObj = GameObject.Find("Canvas");
         GameObject startScreen = GameObject.Find("StartScreen");
         CanvasGroup canvasGroup = canvasObj.GetComponent<CanvasGroup>();
-        currSongManager.StartSong();
         startScreen.SetActive(false);
         if (canvasGroup != null)
         {
-            StartCoroutine(EaseInCanvas(canvasGroup));
+            yield return StartCoroutine(EaseInCanvas(canvasGroup));
         }
+        currSongManager.StartSong();
     }
 
     public static void PauseGame()
