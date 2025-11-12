@@ -37,7 +37,7 @@ public static class MidiNoteReader
     /// </summary>
     /// <param name="fileName">Name of the MIDI file (without path)</param>
     /// <returns>MidiSong containing notes, length, BPM, and name</returns>
-    public static MidiSong LoadMidiSongFromPath(string fileName)
+    public static MidiSong LoadMidiSongFromPath(string song)
     {
         List<NoteData> noteDataList = new List<NoteData>();
         float length = 0f;
@@ -47,7 +47,7 @@ public static class MidiNoteReader
         {
             
             // Read the MIDI file from Assets/MidiFiles/
-            string path = Path.Combine(Application.streamingAssetsPath, "Songs", "IWantItThatWay", $"{"IWantItThatWay"}.mid"); ;
+            string path = Path.Combine(Application.streamingAssetsPath, "Songs", song, $"{song}.mid"); ;
             var midiFile = MidiFile.Read(path);
             
             // Get tempo map for accurate time conversion
@@ -84,16 +84,16 @@ public static class MidiNoteReader
             // Sort by start time
             noteDataList = noteDataList.OrderBy(n => n.start).ToList();
             
-            Debug.Log($"Successfully loaded {noteDataList.Count} notes from {fileName}");
+            Debug.Log($"Successfully loaded {noteDataList.Count} notes from {song}");
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Error reading MIDI file '{fileName}': {e.Message}");
+            Debug.LogError($"Error reading MIDI file '{song}': {e.Message}");
         }
         
         return new MidiSong
         {
-            name = fileName,
+            name = song,
             length = length,
             bpm = bpm,
             notes = noteDataList

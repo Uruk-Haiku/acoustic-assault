@@ -22,7 +22,10 @@ public class SongManager : MonoBehaviour
     private AudioSource audioSourceBackingTrack;
     private AudioSource audioSourceSfx;
 
-    [SerializeField] private float[] timeStamps;
+    [SerializeField] private float[] timeStamps1;
+    [SerializeField] private float[] timeStamps2;
+    
+    private float[] timeStamps;
     private int timeStampIndex = 0;
 
     public float songTime;
@@ -77,9 +80,7 @@ public class SongManager : MonoBehaviour
     {
         AudioSource[] audioSources = GetComponents<AudioSource>();
         audioSourceBackingTrack = audioSources[0];
-        audioSourceSfx = audioSources[1];
-        karaokeManager.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
-        damageCalculator.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
+        // audioSourceSfx = audioSources[1];
 
         // for (int i = 0; i < 2; i++) {
         //     currentEmotionList.Add(EmotionScore.Good);
@@ -129,10 +130,28 @@ public class SongManager : MonoBehaviour
         }
     }
 
-    public void StartSong(string song = "IWantItThatWay")
+    public void StartSong(int levelNum)
     {
+        string song = "";
+        if (levelNum == 1)
+        {
+            timeStamps = timeStamps1;
+            song = "IWantItThatWay";
+        }
+        else if (levelNum == 2)
+        {
+            timeStamps = timeStamps2;
+            song =  "AllIWantForChristmas";
+        }
+        
+        Debug.Log(song);
+        
         songTime = 0;
+        timeStampIndex = 0;
         isPlayingSong = true;
+        
+        karaokeManager.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
+        damageCalculator.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
 
         if (playBackingTrack)
         {
@@ -146,11 +165,16 @@ public class SongManager : MonoBehaviour
             audioSourceBackingTrack.clip = clip;
             audioSourceBackingTrack.PlayDelayed(0);
         }
-
-        //MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath($"/{song}/{song}.mid");
-        string path = Path.Combine(Application.streamingAssetsPath, "Songs", "IWantItThatWay", $"{"IWantItThatWay"}.mid");
-        MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath(path);
-        karaokeManager.StartPlaying(midiSong, 0);
+        
+        MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath(song);
+        if (levelNum == 1)
+        {
+            karaokeManager.StartPlaying(midiSong, 9f);
+        }
+        else if (levelNum == 2)
+        {
+            karaokeManager.StartPlaying(midiSong, 8f);
+        }
 
         damageCalculator.StartRecordingDamage();
 
@@ -178,18 +202,26 @@ public class SongManager : MonoBehaviour
         audioSourceBackingTrack.time = 0f;
         audioSourceBackingTrack.clip = null;
         isPlayingSong = false;
+        songTime = 0;
+        timeStampIndex = 0;
     }
 
     public void PauseSong()
     {
-        isPlayingSong = false;
-        audioSourceBackingTrack.Pause();
+        if (songTime > 0)
+        {
+            isPlayingSong = false;
+            audioSourceBackingTrack.Pause();
+        }
         Time.timeScale = 0f;
     }
     public void UnPauseSong()
     {
-        isPlayingSong = true;
-        audioSourceBackingTrack.Play();
+        if (songTime > 0)
+        {
+            isPlayingSong = true;
+            audioSourceBackingTrack.Play();
+        }
         Time.timeScale = 1f;
     }
     void updatePopup()

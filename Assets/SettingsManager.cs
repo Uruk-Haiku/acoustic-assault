@@ -80,12 +80,13 @@ public class SettingsManager : MonoBehaviour
     {
         if (settingsCanvasUI.activeSelf)
         {
+            GameManager.UnPauseGame();
             settingsCanvasUI.SetActive(false);
             if (SceneManager.GetActiveScene().name == "MenuScreen")
             {
                 CheckBackGroundMenu();
             }
-            else if (SceneManager.GetActiveScene().name == "SingingUI")
+            else if (SceneManager.GetActiveScene().name == "Level1")
             {
                 menuUIController = FindAnyObjectByType<MenuUIController>();
                 if (menuUIController != null)

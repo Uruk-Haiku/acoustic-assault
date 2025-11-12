@@ -12,11 +12,14 @@ EditorBuildSettings:
     path: Assets/Scenes/LevelSelect.unity
     guid: 9cd627a6fe6d8ed4687d5a4b39b7bb48
   - enabled: 1
-    path: Assets/Scenes/SingingUI.unity
+    path: Assets/Scenes/Level1.unity
     guid: db4b045d8e13c4571b310ccef78b6e57
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Level2.unity
+    guid: c22729a65036143f89a19cff5d3f0041
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

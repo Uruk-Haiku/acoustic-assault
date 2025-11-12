@@ -21,6 +21,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
     private RectTransform lyricsRectTransform;
 
     private float barDuration;
+    private float timeBeforeSongStarts;
     private float bpm;
     private bool isPlaying = false;
     public bool isSparkling = false;
@@ -157,25 +158,6 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
     void Start()
     {
-        MidiNoteReader.MidiSong midiSong = MidiNoteReader.LoadMidiSongFromPath("IWantItThatWay/IWantItThatWay.mid");
-        var (lowest1, highest1) = MidiNoteReader.GetNoteRange(midiSong.notes);
-        Debug.Log(lowest1);
-        Debug.Log(highest1);
-        songNotes = ShiftOctaves(midiSong.notes, 0);
-        var (lowest, highest) = MidiNoteReader.GetNoteRange(songNotes);
-        midiToY = BuildMidiToYMap(lowest, highest);
-
-        Debug.Log($"Loaded MIDI Song: {midiSong.name}, Length: {midiSong.length}s, BPM: {midiSong.bpm}, Notes: {midiSong.notes.Count}, Lowest: {lowest}, Highest: {highest}");
-
-        var (lowestUINatural, highestUINatural) = GetUiRange(GetNearestNaturalNote((lowest + highest) / 2));
-
-        Debug.Log($"Lowest UI Natural: {lowestUINatural},  Highest UI Natural: {highestUINatural}");
-
-        UITopFrequency = 440f * Mathf.Pow(2f, (highestUINatural - 69) / 12f);
-        UIBotFrequency = 440f * Mathf.Pow(2f, (lowestUINatural - 69) / 12f);
-
-        Debug.Log($"UI Lowest Frequency: {UIBotFrequency}, UI Highest Frequency: {UITopFrequency}");
-
         rectTransform = GetComponent<RectTransform>();
         cursorRectTransform = Cursor.GetComponent<RectTransform>();
         lyricsRectTransform = lyricsText.GetComponent<RectTransform>();
@@ -207,7 +189,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
         // This is the x offset since the cursor is not directly at the start of the karaoke box
         // This is basically how many pixels the cursor image is off from the left most border
-        float baseCursorOffset = 75f;
+        float baseCursorOffset = 100f;
         // Whatever value we're adding here is the x Pos of the CursorBar Gameobject Hardcoding this for now.
         float cursorOffset = baseCursorOffset + 80f;
 
@@ -221,7 +203,7 @@ public class KaraokeBoxUIManager : MonoBehaviour
         List<MidiNoteReader.NoteData> currentNotes = MidiNoteReader.GetNotesInTimeRange(
             songNotes, SongManager.Instance.songTime - cursorMusicOffset, SongManager.Instance.songTime + barDuration);
 
-        float tStartLyrics = (9f - SongManager.Instance.songTime) / barDuration;
+        float tStartLyrics = (timeBeforeSongStarts - SongManager.Instance.songTime) / barDuration;
         lyricsRectTransform.anchoredPosition = new Vector2(-389.5f + tStartLyrics * 800f + cursorOffset, lyricsRectTransform.anchoredPosition.y);
 
         foreach (var note in currentNotes)
@@ -315,9 +297,28 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
     public void StartPlaying(MidiNoteReader.MidiSong midiSong, float timeBeforeSongStarts)
     {
+        var (lowest1, highest1) = MidiNoteReader.GetNoteRange(midiSong.notes);
+        Debug.Log(lowest1);
+        Debug.Log(highest1);
+        songNotes = ShiftOctaves(midiSong.notes, 0);
+        var (lowest, highest) = MidiNoteReader.GetNoteRange(songNotes);
+        midiToY = BuildMidiToYMap(lowest, highest);
+
+        Debug.Log($"Loaded MIDI Song: {midiSong.name}, Length: {midiSong.length}s, BPM: {midiSong.bpm}, Notes: {midiSong.notes.Count}, Lowest: {lowest}, Highest: {highest}");
+
+        var (lowestUINatural, highestUINatural) = GetUiRange(GetNearestNaturalNote((lowest + highest) / 2));
+
+        Debug.Log($"Lowest UI Natural: {lowestUINatural},  Highest UI Natural: {highestUINatural}");
+
+        UITopFrequency = 440f * Mathf.Pow(2f, (highestUINatural - 69) / 12f);
+        UIBotFrequency = 440f * Mathf.Pow(2f, (lowestUINatural - 69) / 12f);
+
+        Debug.Log($"UI Lowest Frequency: {UIBotFrequency}, UI Highest Frequency: {UITopFrequency}");
+        
         bpm = midiSong.bpm;
         isPlaying = true;
         barDuration = 60.0f / bpm * 12f;
+        this.timeBeforeSongStarts =  timeBeforeSongStarts;
         // SongManager.Instance.songTime = timeBeforeSongStarts - 0.297f * barDuration;
         // print("Hi"+SongManager.Instance.songTime);
     }
