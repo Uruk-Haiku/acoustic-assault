@@ -34,7 +34,20 @@ public class SongManager : MonoBehaviour
     public List<EmotionScore> currentEmotionList = new List<EmotionScore> { EmotionScore.Good, EmotionScore.Good };
     public List<float> emotionScoreList = new List<float> { 0f, 0f };
     public List<float> timeToGetPerfectScoreList = new List<float> { 0f, 0f };
-        float emotionScoreDecaySpeed = 0.03f;
+    public List<float> emotionScoreRatioList
+    {
+        get
+        {
+            List<float> ratios = new List<float>();
+            for (int i = 0; i < emotionScoreList.Count; i++)
+            {
+                float ratio = timeToGetPerfectScoreList[i] > 0 ? emotionScoreList[i] / timeToGetPerfectScoreList[i] : 0f;
+                ratios.Add(ratio);
+            }
+            return ratios;
+        }
+    }
+    float emotionScoreDecaySpeed = 0.03f;
 
     public int GetPlayerFromTime(float time)
     {
@@ -184,7 +197,7 @@ public class SongManager : MonoBehaviour
         // Only apply decay when decreasing (target is lower than current)
         if (karaokeManager.isSparkling)
         {
-            emotionScoreList[currentPlayer - 1] += Time.deltaTime;
+            emotionScoreList[currentPlayer - 1] += 3 * Time.deltaTime;
         }
         else
         {
@@ -195,11 +208,11 @@ public class SongManager : MonoBehaviour
         EmotionScore newEmotion = currentEmotionList[currentPlayer - 1];
         float emotionScoreRatio = emotionScoreList[currentPlayer - 1] / timeToGetPerfectScoreList[currentPlayer - 1];
 
-        if (emotionScoreRatio >= 0.7f)
+        if (emotionScoreRatioList[currentPlayer - 1] >= 0.7f)
         {
             newEmotion = EmotionScore.Great;
         }
-        else if (emotionScoreRatio >= 0.35f)
+        else if (emotionScoreRatioList[currentPlayer - 1] >= 0.35f)
         {
             newEmotion = EmotionScore.Good;
         }
