@@ -164,6 +164,7 @@ public class GameManager : MonoBehaviour
         currSongManager.damageCalculator =  GameObject.Find("DamageCalculator")?.GetComponent<DamageCalculator>();
         currSongManager.karaokeManager = GameObject.Find("KaraokeBox")?.GetComponent<KaraokeBoxUIManager>();
         Instance.StartGame();
+
     }
     public void StartGame()
     {
