@@ -162,6 +162,22 @@ public class GameManager : MonoBehaviour
         {
             char lastChar = scene.name[^1];
             int levelNum = lastChar - '0';
+
+            // TODO: hardcoding level 2 (All I want for christmas) to set an additional pitch offset of 1 octave
+            if (levelNum == 2)
+            {
+                foreach (var kvp in Instance.pitchDetectors)
+                {
+                    kvp.Value.songSpecificOffsetInSemitones = 12;
+                }
+            }
+            else
+            {
+                foreach (var kvp in Instance.pitchDetectors)
+                {
+                    kvp.Value.songSpecificOffsetInSemitones = 0;
+                }
+            }
             SongManager.Instance.damageCalculator =  GameObject.Find("DamageCalculator")?.GetComponent<DamageCalculator>();
             SongManager.Instance.karaokeManager = GameObject.Find("KaraokeBox")?.GetComponent<KaraokeBoxUIManager>();
             Instance.StartGame(levelNum);

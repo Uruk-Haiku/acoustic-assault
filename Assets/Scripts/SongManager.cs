@@ -81,18 +81,6 @@ public class SongManager : MonoBehaviour
         AudioSource[] audioSources = GetComponents<AudioSource>();
         audioSourceBackingTrack = audioSources[0];
         // audioSourceSfx = audioSources[1];
-
-        // for (int i = 0; i < 2; i++) {
-        //     currentEmotionList.Add(EmotionScore.Good);
-        //     emotionScoreList.Add(0);
-        //     timeToGetPerfectScoreList.Add(0);
-        //     // currentEmotionList = new List<EmotionScore> { EmotionScore.Good, EmotionScore.Good };
-        //     // emotionScoreList = new List<float> { 0, 0 };
-        //     // timeToGetPerfectScoreList = new List<float> { 0, 0 };
-        // }
-        // currentEmotionList = new List<EmotionScore> { EmotionScore.Good, EmotionScore.Good };
-        // emotionScoreList = new List<float> { 0, 0 };
-        // timeToGetPerfectScoreList = new List<float> { 0, 0 };
     }
 
     void Update()
@@ -226,6 +214,10 @@ public class SongManager : MonoBehaviour
     }
     void updatePopup()
     {
+        if (karaokeManager.isNullNote)
+        {
+            return;
+        }
         // Only apply decay when decreasing (target is lower than current)
         if (karaokeManager.isSparkling)
         {

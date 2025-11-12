@@ -4222,13 +4222,14 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 526038196}
+  - {fileID: 2028566763}
   m_Father: {fileID: 1050847272}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -32, y: 0.000030517578}
+  m_AnchoredPosition: {x: -32, y: 0}
   m_SizeDelta: {x: 25.000755, y: -80}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &222281540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12559,7 +12560,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 222281539}
-  - {fileID: 2028566763}
   m_Father: {fileID: 1739031403}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
@@ -24760,7 +24760,9 @@ MonoBehaviour:
   damageCalculator: {fileID: 367704542}
   lyricsText: {fileID: 592113916}
   pitchDetector: {fileID: 0}
+  popupBubbleRectTransform: {fileID: 0}
   isSparkling: 0
+  isNullNote: 1
 --- !u!114 &1739031405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25022,11 +25024,11 @@ RectTransform:
   - {fileID: 1791543487}
   - {fileID: 2116269271}
   - {fileID: 1376180816}
-  m_Father: {fileID: 1050847272}
+  m_Father: {fileID: 222281539}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -12.67}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 73.46, y: 61.1}
+  m_AnchoredPosition: {x: 5.459999, y: 21.099968}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &2028566764
