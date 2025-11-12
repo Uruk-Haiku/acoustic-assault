@@ -49,8 +49,6 @@ public class DamageCalculator : MonoBehaviour
     [SerializeField] private float[] timeStamps;
     private int currentTimestampIndex = 0;
     private bool Player1Singing;
-    private float songTime = 0f;
-
 
     private float MaximumDamage;
 
@@ -97,16 +95,14 @@ public class DamageCalculator : MonoBehaviour
         damageBar2.value = 0f;
         currentDamageBar = damageBar1;
 
-        songTime = 0f;
         Player1Singing = true;
         gameEnded = false;
     }
 
-    public void StartRecordingDamage(float startSongTime)
+    public void StartRecordingDamage()
     {
         StartCoroutine(DamageRoutine());
         startRecording = true;
-        songTime = startSongTime;
     }
 
     public void SwitchPlayer()
