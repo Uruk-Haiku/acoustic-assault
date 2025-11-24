@@ -169,6 +169,14 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
+    public void ReturnToMainMenu()
+    {
+        //GameManager.UnPauseGame();
+        //volumeCanvasUI.SetActive(false);
+        //SceneManager.LoadScene("MenuScreen");
+        //CheckBackGroundMenu();
+    }
+
     public void DisableNavigation()
     {
         foreach (var b in buttonsToDisableWhenSettingsOpen)
