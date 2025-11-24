@@ -1,3 +1,4 @@
+using System;
 using Lasp;
 using System.Collections;
 using UnityEngine;
@@ -78,6 +79,7 @@ public class DamageCalculator : MonoBehaviour
     {
         // Calculate theoretical maximum damage: timelength * Coroutine calls per second * max damage per frame (100)
         // If loudness is applied, multiply by loudness multiplier
+        // This should now be times Pow(2, 2.5)f for apply loudness, but will keep it like this so the slider visually looks like it's moving more when the player is louder
         if (applyLoundness)
             MaximumDamage = timeLength * (1 / damageCalculationInterval) * 100f * loudnessMultiplier * maxDamageMultiplier;
         else
@@ -153,7 +155,7 @@ public class DamageCalculator : MonoBehaviour
                 // Calculate accumulated damage and visualize using the slider
                 damageAccumulated1 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.offsetDisplayPitch), pitchDetector.gainedLevel);
                 //Debug.Log(damageAccumulated);
-                currentDamageSlider.value = Mathf.Max(0, (currentHealth2 - ((totalDamage1 + damageAccumulated1) / MaximumDamage) * damageEffectMultiplier));
+                currentDamageSlider.value = Mathf.Max(0, (currentHealth2 - ((totalDamage1 + damageAccumulated1) / (6f * MaximumDamage)) * damageEffectMultiplier));
                 //currentHealth2 = currentDamageSlider.value;
 
                 // Damage bar increase for player1
@@ -164,7 +166,7 @@ public class DamageCalculator : MonoBehaviour
                 // Calculate accumulated damage and visualize using the slider
                 damageAccumulated2 += ApplyLoudnessMultiplier(CalculateDamage(pitchDetector.offsetDisplayPitch), pitchDetector.gainedLevel);
                 //Debug.Log(damageAccumulated);
-                currentDamageSlider.value = Mathf.Max(0, (currentHealth1 - ((totalDamage2 + damageAccumulated2) / MaximumDamage) * damageEffectMultiplier));
+                currentDamageSlider.value = Mathf.Max(0, (currentHealth1 - ((totalDamage2 + damageAccumulated2) / (6f * MaximumDamage)) * damageEffectMultiplier));
                 //currentHealth1 = currentDamageSlider.value;
 
                 // Damage bar increase for player2
@@ -206,8 +208,8 @@ public class DamageCalculator : MonoBehaviour
         minLoudnessDb = -pitchDetector.dynamicRange;
         // Clamp loudness between -minLoudnessDB and maxLoudnessdB, then normalize to 0-1 range
         float normalizedLoudness = Mathf.InverseLerp(minLoudnessDb, maxLoudnessDb, loudness);
-        // Debug.Log("NormalizedLoudness: " + normalizedLoudness);
-        return damage * normalizedLoudness * loudnessMultiplier;
+        // Changed formula to make loudness more apparent in slider
+        return damage * MathF.Pow((1 + normalizedLoudness), 2.5f) * loudnessMultiplier;
     }
     #endregion
 

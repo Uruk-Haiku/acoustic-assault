@@ -24,6 +24,7 @@ public class SongManager : MonoBehaviour
     private AudioSource audioSourceBackingTrack;
     private AudioSource audioSourceSfx;
 
+    [SerializeField] private float[] timeStamps0;
     [SerializeField] private float[] timeStamps1;
     [SerializeField] private float[] timeStamps2;
 
@@ -90,6 +91,22 @@ public class SongManager : MonoBehaviour
     {
         if (isPlayingSong)
         {
+            if (GameManager.GetCurrentTutorialStage() == 6 && songTime > 2.24f)
+            {
+                GameManager.GoToNextTutorialStage();
+            }
+            else if (GameManager.GetCurrentTutorialStage() == 9 && songTime > 6.24f)
+            {
+                GameManager.GoToNextTutorialStage();
+            }
+            else if (GameManager.GetCurrentTutorialStage() == 12 && songTime > 14.24f)
+            {
+                GameManager.GoToNextTutorialStage();
+            }
+            else if (GameManager.GetCurrentTutorialStage() == 13 && songTime > 32f)
+            {
+                GameManager.GoToNextTutorialStage();
+            }
             updatePopup();
             songTime += Time.deltaTime;
             if (timeStampIndex < timeStamps.Length && songTime >= timeStamps[timeStampIndex])
@@ -161,7 +178,7 @@ public class SongManager : MonoBehaviour
 
     IEnumerator ExitToMainMenu()
     {
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(5);
         audioSourceSfx.Stop();
         isPlayingSong = false;
         damageCalculator.startRecording = false;
@@ -173,9 +190,14 @@ public class SongManager : MonoBehaviour
 
     public void StartSong(int levelNum)
     {
+        songTime = 0;
+        timeStampIndex = 0;
+        isPlayingSong = true;
+        
         string song = "";
         if (levelNum == 1)
         {
+            songTime = -0.2f; // artificial lag synchronizer
             timeStamps = timeStamps1;
             song = "IWantItThatWay";
         }
@@ -184,12 +206,14 @@ public class SongManager : MonoBehaviour
             timeStamps = timeStamps2;
             song = "AllIWantForChristmas";
         }
-
+        else if (levelNum == 0)
+        {
+            songTime = -4f;
+            timeStamps = timeStamps0;
+            song = "MaryHadALittleLamb";
+        }
+        
         Debug.Log(song);
-
-        songTime = 0;
-        timeStampIndex = 0;
-        isPlayingSong = true;
 
         karaokeManager.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
         damageCalculator.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
@@ -218,6 +242,10 @@ public class SongManager : MonoBehaviour
         {
             karaokeManager.StartPlaying(midiSong, 8f);
         }
+        else if (levelNum == 0)
+        {
+            karaokeManager.StartPlaying(midiSong, 16f);
+        }
 
         damageCalculator.StartRecordingDamage();
 
@@ -240,6 +268,11 @@ public class SongManager : MonoBehaviour
         emotionScoreList[0] = 0.5f * timeToGetPerfectScoreList[0];
 
         isLevelFinished = false;
+
+        if (levelNum == 0)
+        {
+            StartCoroutine(GameManager.Instance.StartTutorialCoroutine());
+        }
     }
 
     public void EndSong()

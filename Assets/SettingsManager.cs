@@ -41,11 +41,32 @@ public class SettingsManager : MonoBehaviour
     }
     public void ToggleSettingsForPlayer(int playerID)
     {
+        
+        if (GameManager.GetCurrentTutorialStage() == 2 && playerID == 0)
+        {
+            GameManager.CloseTutorialPopup();
+        }
+        else if (GameManager.GetCurrentTutorialStage() == 4 && playerID == 1)
+        {
+            GameManager.CloseTutorialPopup();
+        }
+        
+        
         // Check if canvas is currently active
         if (settingsCanvasUI.activeSelf)
         {
             if (playerID == settingsPanel.currentPlayer)
             {
+                if (GameManager.GetCurrentTutorialStage() == 3 && playerID == 0)
+                {
+                    GameManager.CloseTutorialPopup();
+                    GameManager.GoToNextTutorialStage();
+                }
+                else if (GameManager.GetCurrentTutorialStage() == 4 && playerID == 1)
+                {
+                    GameManager.GoToNextTutorialStage();
+                }
+                
                 GameManager.UnPauseGame();
                 settingsCanvasUI.SetActive(false);
                 if (SceneManager.GetActiveScene().name == "MenuScreen")
@@ -78,6 +99,17 @@ public class SettingsManager : MonoBehaviour
     }
     public void ExitSettings()
     {
+        
+        if (GameManager.GetCurrentTutorialStage() == 3)
+        {
+            GameManager.CloseTutorialPopup();
+            GameManager.GoToNextTutorialStage();
+        }
+        else if (GameManager.GetCurrentTutorialStage() == 4)
+        {
+            GameManager.GoToNextTutorialStage();
+        }
+        
         if (settingsCanvasUI.activeSelf)
         {
             GameManager.UnPauseGame();
