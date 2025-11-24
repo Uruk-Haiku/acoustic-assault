@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class SettingsManager : MonoBehaviour
 {
     [SerializeField] private GameObject settingsCanvasUI;
+    [SerializeField] private GameObject volumeCanvasUI;
     [SerializeField] private SettingsPanel settingsPanel;
 
     public GameObject mainMenuPanel;
@@ -37,6 +38,11 @@ public class SettingsManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.JoystickButton3))
         {
             ToggleSettingsForPlayer(1);
+        }
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            ToggleVolumeSetting();
         }
     }
     public void ToggleSettingsForPlayer(int playerID)
@@ -109,6 +115,60 @@ public class SettingsManager : MonoBehaviour
         }
         EnableNavigation();
     }
+
+    public void ToggleVolumeSetting()
+    {
+        // Check if canvas is currently active
+        if (volumeCanvasUI.activeSelf)
+        {
+            GameManager.UnPauseGame();
+            volumeCanvasUI.SetActive(false);
+            if (SceneManager.GetActiveScene().name == "MenuScreen")
+            {
+               CheckBackGroundMenu();
+            }
+            else
+            {
+                menuUIController = FindAnyObjectByType<MenuUIController>();
+                if (menuUIController != null)
+                {
+                    menuUIController.SelectStartSong();
+                }
+            }
+        }
+        else
+        {
+            GameManager.PauseGame();
+            volumeCanvasUI.SetActive(true);
+            if (SceneManager.GetActiveScene().name == "MenuScreen")
+            {
+                DisableNavigation();
+            }
+            selectedObjectManager.SetSelectedObject("BaseSettings");
+        }
+    }
+
+    public void ExitVolumeSettings()
+    {
+        if (volumeCanvasUI.activeSelf)
+        {
+            GameManager.UnPauseGame();
+            volumeCanvasUI.SetActive(false);
+            if (SceneManager.GetActiveScene().name == "MenuScreen")
+            {
+                CheckBackGroundMenu();
+            }
+            else
+            {
+                menuUIController = FindAnyObjectByType<MenuUIController>();
+                if (menuUIController != null)
+                {
+                    menuUIController.SelectStartSong();
+                }
+            }
+        }
+    }
+
     public void DisableNavigation()
     {
         foreach (var b in buttonsToDisableWhenSettingsOpen)
