@@ -12780,7 +12780,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 796b6669bfbc64f7e95638efa03ba56c, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4520409485191819195, guid: 796b6669bfbc64f7e95638efa03ba56c, type: 3}
       propertyPath: m_IsActive
@@ -25832,6 +25832,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2028566762}
   m_CullTransparentMesh: 1
+--- !u!1001 &2048265560
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1632743488327947687, guid: fb7defb4e9e504080918ac487d3c1774, type: 3}
+      propertyPath: m_Name
+      value: RealStageChristmas
+      objectReference: {fileID: 0}
+    - target: {fileID: 6104969585456615563, guid: fb7defb4e9e504080918ac487d3c1774, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 282
+      objectReference: {fileID: 0}
+    - target: {fileID: 6104969585456615563, guid: fb7defb4e9e504080918ac487d3c1774, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6104969585456615563, guid: fb7defb4e9e504080918ac487d3c1774, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 371
+      objectReference: {fileID: 0}
+    - target: {fileID: 6104969585456615563, guid: fb7defb4e9e504080918ac487d3c1774, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6104969585456615563, guid: fb7defb4e9e504080918ac487d3c1774, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6104969585456615563, guid: fb7defb4e9e504080918ac487d3c1774, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6104969585456615563, guid: fb7defb4e9e504080918ac487d3c1774, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6104969585456615563, guid: fb7defb4e9e504080918ac487d3c1774, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6104969585456615563, guid: fb7defb4e9e504080918ac487d3c1774, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6104969585456615563, guid: fb7defb4e9e504080918ac487d3c1774, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fb7defb4e9e504080918ac487d3c1774, type: 3}
 --- !u!1 &2048628590 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8006796349923156138, guid: 22c8200e1a21d4f4daf0b58dd1b39f42, type: 3}
@@ -26132,3 +26189,4 @@ SceneRoots:
   - {fileID: 367704543}
   - {fileID: 1050418245}
   - {fileID: 1933663580}
+  - {fileID: 2048265560}
