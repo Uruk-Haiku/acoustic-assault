@@ -16,6 +16,7 @@ public class SelectedObjectManager : MonoBehaviour
     [SerializeField] private GameObject fs_PitchCeiling;
     [SerializeField] private GameObject fs_NextButton;
     [SerializeField] private GameObject fs_OcativeSelection;
+    [SerializeField] private GameObject fs_VolumeSettings;
 
     private void Awake()
     {
@@ -54,6 +55,9 @@ public class SelectedObjectManager : MonoBehaviour
                 break;
             case "OcativeSelection":
                 StartCoroutine(SelectFirstButton(fs_OcativeSelection));
+                break;
+            case "VolumeSettings":
+                StartCoroutine(SelectFirstButton(fs_VolumeSettings));
                 break;
             default:
                 Debug.LogWarning("No matching first selected object found for: " + objectName);
