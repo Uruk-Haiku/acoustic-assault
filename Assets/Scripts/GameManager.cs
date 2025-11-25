@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Lasp;
+using System.Linq;
 using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
@@ -24,6 +25,15 @@ public class GameManager : MonoBehaviour
     public Dictionary<int, GameObject> playerGameObjects = new Dictionary<int, GameObject>();
     private int playerScore = 0;
 
+    private bool inTutorialMode = false;
+
+    private int[] tutorialStages = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    private int currentStage = 0;
+    private int nextStage = 0;
+
+    GameObject tutorialCanvas;
+    public GameObject currentTutorialPopup;
+    
     void Awake()
     {
         // Singleton pattern
@@ -158,6 +168,51 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public static bool InTutorialMode()
+    {
+        if (Instance != null)
+        {
+            return Instance.inTutorialMode;
+        }
+
+        return false;
+    }
+    
+    public static int GetCurrentTutorialStage()
+    {
+        if (Instance != null)
+        {
+            return Instance.currentStage;
+        }
+
+        return -1;
+    }
+    
+    public static void GoToNextTutorialStage()
+    {
+        if (Instance != null)
+        {
+            Instance.currentStage += 1;
+        }
+    }
+
+    public static void CloseTutorialPopup()
+    {
+        if (Instance.currentTutorialPopup != null)
+        {
+            Instance.currentTutorialPopup.SetActive(false);
+            Instance.currentTutorialPopup = null;
+            UnPauseGame();
+
+            int[] autoAdvanceStages = { 0, 1, 2, 5, 7, 8, 10, 11, 14, 15 };
+
+            if (autoAdvanceStages.Contains(GetCurrentTutorialStage()))
+            {
+                GoToNextTutorialStage();
+            }
+        }
+    }
+
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log(scene.buildIndex);
@@ -185,8 +240,32 @@ public class GameManager : MonoBehaviour
             pinkWin.SetActive(false);
             pinkLose.SetActive(false);
             greenWin.SetActive(false);
-            greenLose.SetActive(false);            char lastChar = scene.name[^1];
+            greenLose.SetActive(false);            
+            char lastChar = scene.name[^1];
             int levelNum = lastChar - '0';
+
+            if (levelNum == 0)
+            {
+                inTutorialMode = true;
+                tutorialCanvas = GameObject.Find("StartScreen");
+
+                foreach (Transform child in tutorialCanvas.transform)
+                {
+                    if (child.name.StartsWith("panel"))
+                    {
+                        Button button = child.GetComponentInChildren<Button>(true);
+
+                        if (button != null)
+                        {
+                            button.onClick.AddListener(() => CloseTutorialPopup());
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"No button found in {child.name}");
+                        }
+                    }
+                }
+            }
 
             // TODO: hardcoding level 2 (All I want for christmas) to set an additional pitch offset of 1 octave
             if (levelNum == 2)
@@ -220,14 +299,41 @@ public class GameManager : MonoBehaviour
         winLoseCamera.SetActive(false);
         Animator animator = mainCamera.GetComponent<Animator>();
         animator.SetTrigger("StartAnim");
-        GameObject startScreen = GameObject.Find("StartScreen");
+        GameObject startSongButton = GameObject.Find("StartSong");
         CanvasGroup canvasGroup = canvasObj.GetComponent<CanvasGroup>();
-        startScreen.SetActive(false);
+        startSongButton.SetActive(false);
         if (canvasGroup != null)
         {
             yield return StartCoroutine(EaseInCanvas(canvasGroup));
         }
         SongManager.Instance.StartSong(levelNum);
+    }
+    
+    public IEnumerator StartTutorialCoroutine()
+    {
+        nextStage = 0;
+        currentStage = 0;
+        while (currentStage < tutorialStages.Length)
+        {
+            while (currentStage < nextStage)
+            {
+                yield return null;
+            }
+
+            if (currentStage >= tutorialStages.Length)
+            {
+                Instance.inTutorialMode = false;
+                Instance.tutorialCanvas = null;
+                Instance.currentTutorialPopup = null;
+                break;
+            }
+            
+            Transform panelTransform = tutorialCanvas.transform.Find("panel" + currentStage);
+            panelTransform.gameObject.SetActive(true);
+            currentTutorialPopup = panelTransform.gameObject;
+            nextStage += 1;
+            PauseGame();
+        }
     }
 
     public static void PauseGame()
