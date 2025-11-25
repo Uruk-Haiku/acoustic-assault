@@ -217,6 +217,7 @@ public class SongManager : MonoBehaviour
         }
         else if (levelNum == 2)
         {
+            songTime = -0.3f; // artificial lag synchronizer
             timeStamps = timeStamps2;
             song = "AllIWantForChristmas";
         }
