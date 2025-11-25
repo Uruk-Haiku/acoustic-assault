@@ -206,6 +206,12 @@ public class GameManager : MonoBehaviour
 
             int[] autoAdvanceStages = { 0, 1, 2, 5, 7, 8, 10, 11, 14, 15 };
 
+            if (GetCurrentTutorialStage() == 13)
+            {
+                // Super not extendible will fix later if we work on this in future
+                SongManager.Instance.PlayBackingTrack("MaryHadALittleLamb", 1.9f);
+            }
+
             if (autoAdvanceStages.Contains(GetCurrentTutorialStage()))
             {
                 GoToNextTutorialStage();

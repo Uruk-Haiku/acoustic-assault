@@ -107,6 +107,7 @@ public class SongManager : MonoBehaviour
             {
                 GameManager.GoToNextTutorialStage();
             }
+            
             updatePopup();
             songTime += Time.deltaTime;
             if (timeStampIndex < timeStamps.Length && songTime >= timeStamps[timeStampIndex])
@@ -188,6 +189,19 @@ public class SongManager : MonoBehaviour
         GameManager.LoadScene("MenuScreen");
     }
 
+    public void PlayBackingTrack(string song, float delay)
+    {
+        AudioClip clip = Resources.Load<AudioClip>($"Music/Songs/{song}/{song}Backing");
+        if (clip == null)
+        {
+            Debug.LogError($"AudioClip Assets/Resources/Music/Songs/{song}/{song}Backing.wav not found in Resources.");
+            return;
+        }
+        Debug.Log($"AudioClip Assets/Resources/Music/Songs/{song}/{song}Backing.wav Loaded");
+        audioSourceBackingTrack.clip = clip;
+        audioSourceBackingTrack.PlayDelayed(delay);
+    }
+
     public void StartSong(int levelNum)
     {
         songTime = 0;
@@ -218,17 +232,9 @@ public class SongManager : MonoBehaviour
         karaokeManager.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
         damageCalculator.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
 
-        if (playBackingTrack)
+        if (levelNum > 0)
         {
-            AudioClip clip = Resources.Load<AudioClip>($"Music/Songs/{song}/{song}Backing");
-            if (clip == null)
-            {
-                Debug.LogError($"AudioClip Assets/Resources/Music/Songs/{song}/{song}Backing.wav not found in Resources.");
-                return;
-            }
-            Debug.Log($"AudioClip Assets/Resources/Music/Songs/{song}/{song}Backing.wav Loaded");
-            audioSourceBackingTrack.clip = clip;
-            audioSourceBackingTrack.PlayDelayed(0);
+            PlayBackingTrack(song, 0);
         }
 
         // Load sfx
