@@ -26,10 +26,10 @@ public class VolumeSettingPanel : MonoBehaviour
                 switch (sliderIndex)
                 {
                     case 0:
-                        selectedObjectManager.SetSelectedObject("MusicVolume");
+                        SelectedObjectManager.Instance.SetSelectedObject("MusicVolume");
                         break;
                     case 1:
-                        selectedObjectManager.SetSelectedObject("SFXVolume");
+                        SelectedObjectManager.Instance.SetSelectedObject("SFXVolume");
                         break;
                 }
             }

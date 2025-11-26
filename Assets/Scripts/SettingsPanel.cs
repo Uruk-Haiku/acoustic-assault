@@ -40,7 +40,7 @@ public class SettingsPanel : MonoBehaviour
 
         if (page == 1)
         {
-            selectedObjectManager.SetSelectedObject("DeviceSelection");
+            SelectedObjectManager.Instance.SetSelectedObject("DeviceSelection");
         }
     }
 }
