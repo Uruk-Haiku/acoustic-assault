@@ -20,7 +20,7 @@ public class SettingsManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.W))
         {
             ToggleSettingsForPlayer(0);
         }
@@ -40,7 +40,12 @@ public class SettingsManager : MonoBehaviour
             ToggleSettingsForPlayer(1);
         }
 
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ToggleVolumeSetting();
+        }
+
+        if (Input.GetKeyDown(KeyCode.JoystickButton7))
         {
             ToggleVolumeSetting();
         }
@@ -137,11 +142,18 @@ public class SettingsManager : MonoBehaviour
 
     private void CheckBackGroundMenu()
     {
-        if (mainMenuPanel.activeSelf)
+        GameObject mainMenu = GameObject.Find("PrimaryCanvas/MainMenuPanel");
+        GameObject selectLevel = GameObject.Find("PrimaryCanvas/SelectLevelPanel");
+        if (mainMenu == null && selectLevel == null)
+        {
+            Debug.LogError("Panel not found in the scene!");
+            return;
+        }
+        if (mainMenu != null && mainMenu.activeSelf)
         {
             selectedObjectManager.SetSelectedObject("MainMenu");
         }
-        else if (selectLevelPanel.activeSelf)
+        else if (selectLevel != null && selectLevel.activeSelf)
         {
             selectedObjectManager.SetSelectedObject("SelectLevel");
         }
@@ -176,7 +188,7 @@ public class SettingsManager : MonoBehaviour
             {
                 DisableNavigation();
             }
-            selectedObjectManager.SetSelectedObject("BaseSettings");
+            selectedObjectManager.SetSelectedObject("VolumeSettings");
         }
     }
 
@@ -207,24 +219,35 @@ public class SettingsManager : MonoBehaviour
         //volumeCanvasUI.SetActive(false);
         //SceneManager.LoadScene("MenuScreen");
         //CheckBackGroundMenu();
+        if (SceneManager.GetActiveScene().name == "MenuScreen")
+        {
+            ExitVolumeSettings();
+            Debug.Log("Already in Main Menu");
+        }
+        else
+        {
+            GameManager.UnPauseGame();
+            volumeCanvasUI.SetActive(false);
+            SongManager.Instance.ReturnToMainMenuByButton();
+        }
     }
 
     public void DisableNavigation()
     {
-        foreach (var b in buttonsToDisableWhenSettingsOpen)
-        {
-            var nav = new Navigation { mode = Navigation.Mode.None };
-            b.navigation = nav;
-        }
+        //foreach (var b in buttonsToDisableWhenSettingsOpen)
+        //{
+        //    var nav = new Navigation { mode = Navigation.Mode.None };
+        //    b.navigation = nav;
+        //}
     }
 
     public void EnableNavigation()
     {
-        foreach (var b in buttonsToDisableWhenSettingsOpen)
-        {
-            var nav = new Navigation { mode = Navigation.Mode.Automatic };
-            b.navigation = nav;
-        }
+        //foreach (var b in buttonsToDisableWhenSettingsOpen)
+        //{
+        //    var nav = new Navigation { mode = Navigation.Mode.Automatic };
+        //    b.navigation = nav;
+        //}
     }
 }
 

@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     public GameObject greenWin;
     public GameObject greenLose;
     public GameObject settingsCanvasUI;
+    public GameObject volumeCanvasUI;
     [SerializeField] public int[] initialPlayerIDs = { 0, 1 };
     public Dictionary<int, PitchDetector> pitchDetectors = new Dictionary<int, PitchDetector>();
     public Dictionary<int, GameObject> playerGameObjects = new Dictionary<int, GameObject>();
@@ -44,6 +45,10 @@ public class GameManager : MonoBehaviour
         if (settingsCanvasUI != null)
         {
             DontDestroyOnLoad(settingsCanvasUI);
+        }
+        if (volumeCanvasUI != null)
+        {
+            DontDestroyOnLoad(volumeCanvasUI);
         }
         SceneManager.sceneLoaded += OnSceneLoaded;
     }

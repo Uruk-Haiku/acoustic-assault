@@ -25,6 +25,7 @@ public class BaseSettingsPanel : MonoBehaviour
         {
             if (settingsPanel.activeSelf)
             {
+                Debug.Log("Re-selecting Base Settings Panel");
                 switch (dropdownIndex)
                 {
                     case 0:

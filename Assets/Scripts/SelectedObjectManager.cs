@@ -17,6 +17,8 @@ public class SelectedObjectManager : MonoBehaviour
     [SerializeField] private GameObject fs_NextButton;
     [SerializeField] private GameObject fs_OcativeSelection;
     [SerializeField] private GameObject fs_VolumeSettings;
+    [SerializeField] private GameObject fs_MusicVolume;
+    [SerializeField] private GameObject fs_SFXVolume;
 
     private void Awake()
     {
@@ -58,6 +60,12 @@ public class SelectedObjectManager : MonoBehaviour
                 break;
             case "VolumeSettings":
                 StartCoroutine(SelectFirstButton(fs_VolumeSettings));
+                break;
+            case "MusicVolume":
+                StartCoroutine(SelectFirstButton(fs_MusicVolume));
+                break;
+            case "SFXVolume":
+                StartCoroutine(SelectFirstButton(fs_SFXVolume));
                 break;
             default:
                 Debug.LogWarning("No matching first selected object found for: " + objectName);
