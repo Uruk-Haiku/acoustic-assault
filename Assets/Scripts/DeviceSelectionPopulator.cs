@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using System.Linq;
 using Lasp;
+using System.Collections.Generic;
 
 public class DeviceSelectionPopulator : MonoBehaviour
 {
@@ -13,16 +14,38 @@ public class DeviceSelectionPopulator : MonoBehaviour
         public DeviceItem(in Lasp.DeviceDescriptor device)
           => (text, id) = (device.Name, device.ID);
     }
-    void Start()
+    void Awake()
     {
         // Populate the dropdown
         deviceDropdown = GetComponent<TMP_Dropdown>();
         deviceDropdown.ClearOptions();
 
-        deviceDropdown.options.AddRange
-          (Lasp.AudioSystem.InputDevices.Select(dev => new DeviceItem(dev)));
+        // set dropdown value to be currentPlayer device
+        SettingsPanel settingsPanel = GetComponentInParent<SettingsPanel>();
+        int playerID = settingsPanel.currentPlayer;
+
+        // We need to recreate the pitch detector object since you can't change mics when
+        // stream is running.
+        GameManager.RecreatePitchDetector(playerID);
+        PitchDetector pitchDetector = GameManager.GetPitchDetection(playerID);
+
+        List<DeviceItem> deviceDict = new List<DeviceItem>();
+        int tempin = 0;
+
+        foreach (var dev in Lasp.AudioSystem.InputDevices)
+        {
+            if (dev.ID == pitchDetector.deviceID)
+            {
+                tempin = deviceDict.Count;
+            }
+            deviceDict.Add(new DeviceItem(dev));
+        }
+
+        deviceDropdown.options.AddRange(deviceDict);
+        deviceDropdown.SetValueWithoutNotify(tempin);
 
         deviceDropdown.RefreshShownValue();
+
 
         // Get dropdown and add listener
         deviceDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
