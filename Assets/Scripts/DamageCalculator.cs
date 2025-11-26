@@ -240,7 +240,7 @@ public class DamageCalculator : MonoBehaviour
             return;
         }
 
-        if (damageSlider2.value < 0.1)
+        if (damageSlider1.value < 0.1)
         {
                 isGameOver = true;
                 gameEndState = 2;
