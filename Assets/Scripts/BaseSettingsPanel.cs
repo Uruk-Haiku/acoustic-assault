@@ -29,13 +29,13 @@ public class BaseSettingsPanel : MonoBehaviour
                 switch (dropdownIndex)
                 {
                     case 0:
-                        selectedObjectManager.SetSelectedObject("BaseSettings");
+                        SelectedObjectManager.Instance.SetSelectedObject("BaseSettings");
                         break;
                     case 1:
-                        selectedObjectManager.SetSelectedObject("OcativeSelection");
+                        SelectedObjectManager.Instance.SetSelectedObject("OcativeSelection");
                         break;
                 }
-                selectedObjectManager.SetSelectedObject("BaseSettings");
+                SelectedObjectManager.Instance.SetSelectedObject("BaseSettings");
             }
         }
     }

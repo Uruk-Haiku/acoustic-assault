@@ -73,9 +73,9 @@ public class TMPDropdownClickListener : MonoBehaviour
     private void OnDropdownOptionSelected(int index, string text)
     {
         if (dropdownIndex == 0)
-            selectedObjectManager.SetSelectedObject("DeviceSelection");
+            SelectedObjectManager.Instance.SetSelectedObject("DeviceSelection");
         else if (dropdownIndex == 1)
-            selectedObjectManager.SetSelectedObject("OcativeSelection");
+            SelectedObjectManager.Instance.SetSelectedObject("OcativeSelection");
     }
 
     public void OnSubmit()

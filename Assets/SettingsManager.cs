@@ -105,7 +105,7 @@ public class SettingsManager : MonoBehaviour
             {
                 DisableNavigation();
             }
-            selectedObjectManager.SetSelectedObject("BaseSettings");
+            SelectedObjectManager.Instance.SetSelectedObject("BaseSettings");
         }
     }
     public void ExitSettings()
@@ -151,11 +151,11 @@ public class SettingsManager : MonoBehaviour
         }
         if (mainMenu != null && mainMenu.activeSelf)
         {
-            selectedObjectManager.SetSelectedObject("MainMenu");
+            SelectedObjectManager.Instance.SetSelectedObject("MainMenu");
         }
         else if (selectLevel != null && selectLevel.activeSelf)
         {
-            selectedObjectManager.SetSelectedObject("SelectLevel");
+            SelectedObjectManager.Instance.SetSelectedObject("SelectLevel");
         }
         EnableNavigation();
     }
@@ -188,7 +188,7 @@ public class SettingsManager : MonoBehaviour
             {
                 DisableNavigation();
             }
-            selectedObjectManager.SetSelectedObject("VolumeSettings");
+            SelectedObjectManager.Instance.SetSelectedObject("VolumeSettings");
         }
     }
 

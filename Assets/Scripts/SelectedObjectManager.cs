@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class SelectedObjectManager : MonoBehaviour
 {
@@ -22,8 +23,35 @@ public class SelectedObjectManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
         DontDestroyOnLoad(this.gameObject);
     }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "MenuScreen")
+        {
+            fs_MainMenu = GameObject.Find("SelectLevelButton");
+            fs_SelectLevel = GameObject.Find("Level1Button");
+        }
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
     public void SetSelectedObject(string objectName)
     {
         switch(objectName)
@@ -91,4 +119,6 @@ public class SelectedObjectManager : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(selectedButton);
     }
+
+
 }

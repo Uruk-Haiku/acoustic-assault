@@ -56,6 +56,6 @@ public class DropdownController : MonoBehaviour
         yield return null;
 
         // Select back to the dropdown to keep navigation consistent
-        selectedObjectManager.SetSelectedObject("DeviceSelection");
+        SelectedObjectManager.Instance.SetSelectedObject("DeviceSelection");
     }
 }

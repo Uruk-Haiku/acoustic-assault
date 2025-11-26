@@ -56,11 +56,11 @@ public class MenuManager : MonoBehaviour
 
         if (panelToShow == mainMenuPanel)
         {
-            selectedObjectManager.SetSelectedObject("MainMenu");
+            SelectedObjectManager.Instance.SetSelectedObject("MainMenu");
         }
         else if (panelToShow == selectLevelPanel)
         {
-            selectedObjectManager.SetSelectedObject("SelectLevel");
+            SelectedObjectManager.Instance.SetSelectedObject("SelectLevel");
         }
 
         // Debug.Log("Selected button is now: " + EventSystem.current.currentSelectedGameObject.name);
