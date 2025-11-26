@@ -1323,6 +1323,7 @@ GameObject:
   m_Component:
   - component: {fileID: 197177059}
   - component: {fileID: 197177060}
+  - component: {fileID: 197177061}
   m_Layer: 5
   m_Name: MusicVolumeSlider
   m_TagString: Untagged
@@ -1376,7 +1377,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_SelectedColor: {r: 1, g: 0, b: 0.83140135, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1399,10 +1400,37 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 10
   m_WholeNumbers: 1
-  m_Value: 6
+  m_Value: 10
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 760722130}
+        m_TargetAssemblyTypeName: VolumeSettings, Assembly-CSharp
+        m_MethodName: SetMusicVolume
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &197177061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197177058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabca2551cd16564ebb7d765d419d5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SliderFix
+  selectedObjectManager: {fileID: 1697526965}
+  sliderIndex: 0
+  volumeSettingPanel: {fileID: 1795125043}
 --- !u!224 &224981962 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3873313825879075086, guid: 15e26c5348637314098e8b1780e0cfeb, type: 3}
@@ -1603,7 +1631,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &304461925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2936,7 +2964,7 @@ MonoBehaviour:
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 660662989}
     m_SelectOnDown: {fileID: 197177060}
-    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnLeft: {fileID: 2046746909}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
@@ -3493,6 +3521,14 @@ PrefabInstance:
       value: 1200
       objectReference: {fileID: 0}
     - target: {fileID: 255121009978121712, guid: 107be5701df59f84d8f1b02f124719f4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 255121009978121712, guid: 107be5701df59f84d8f1b02f124719f4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -515
+      objectReference: {fileID: 0}
+    - target: {fileID: 255121009978121712, guid: 107be5701df59f84d8f1b02f124719f4, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
@@ -3542,11 +3578,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7045803605236038489, guid: 107be5701df59f84d8f1b02f124719f4, type: 3}
       propertyPath: m_text
-      value: 'Esc/X: P1 settings, E/Y: P2 settings'
+      value: 'Esc/Start Button: Volume Settings,W/X: P1 Settings, E/Y: P2 Settings'
       objectReference: {fileID: 0}
     - target: {fileID: 7045803605236038489, guid: 107be5701df59f84d8f1b02f124719f4, type: 3}
       propertyPath: m_fontSize
       value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 7045803605236038489, guid: 107be5701df59f84d8f1b02f124719f4, type: 3}
+      propertyPath: m_margin.z
+      value: -71.141846
       objectReference: {fileID: 0}
     - target: {fileID: 7045803605236038489, guid: 107be5701df59f84d8f1b02f124719f4, type: 3}
       propertyPath: m_fontAsset
@@ -4623,6 +4663,7 @@ GameObject:
   m_Component:
   - component: {fileID: 660662988}
   - component: {fileID: 660662989}
+  - component: {fileID: 660662990}
   m_Layer: 5
   m_Name: SFXVolumeSlider
   m_TagString: Untagged
@@ -4676,7 +4717,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_SelectedColor: {r: 0.22327292, g: 1, b: 0, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -4702,7 +4743,34 @@ MonoBehaviour:
   m_Value: 6
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 760722130}
+        m_TargetAssemblyTypeName: VolumeSettings, Assembly-CSharp
+        m_MethodName: SetSFXVolume
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &660662990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 660662987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabca2551cd16564ebb7d765d419d5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SliderFix
+  selectedObjectManager: {fileID: 1697526965}
+  sliderIndex: 1
+  volumeSettingPanel: {fileID: 1795125043}
 --- !u!1 &667693463
 GameObject:
   m_ObjectHideFlags: 0
@@ -5725,6 +5793,7 @@ GameObject:
   - component: {fileID: 760722129}
   - component: {fileID: 760722128}
   - component: {fileID: 760722127}
+  - component: {fileID: 760722130}
   m_Layer: 5
   m_Name: VolumeSettingsPanel
   m_TagString: Untagged
@@ -5811,6 +5880,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 760722125}
   m_CullTransparentMesh: 1
+--- !u!114 &760722130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 760722125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b024cd05468164449245ebdfb99d4b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VolumeSettings
+  audioMixer: {fileID: 24100000, guid: d2238b38b2a38c84cb571be6d75b5ff9, type: 2}
+  musicSlider: {fileID: 197177060}
+  sfxSlider: {fileID: 660662989}
 --- !u!1 &802989457
 GameObject:
   m_ObjectHideFlags: 0
@@ -8795,7 +8879,7 @@ RectTransform:
   m_Father: {fileID: 732207835}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.6, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -9413,7 +9497,7 @@ RectTransform:
   m_Father: {fileID: 1291346966}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.6, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -12628,8 +12712,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1038746360}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.6, y: 0}
+  m_AnchorMax: {x: 0.6, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -13457,6 +13541,8 @@ MonoBehaviour:
   fs_NextButton: {fileID: 1025401468729277945}
   fs_OcativeSelection: {fileID: 1368697067}
   fs_VolumeSettings: {fileID: 2046746907}
+  fs_MusicVolume: {fileID: 197177058}
+  fs_SFXVolume: {fileID: 660662987}
 --- !u!4 &1697526966
 Transform:
   m_ObjectHideFlags: 0
@@ -15156,7 +15242,7 @@ GameObject:
   - component: {fileID: 1795125039}
   - component: {fileID: 1795125042}
   - component: {fileID: 1795125041}
-  - component: {fileID: 1795125040}
+  - component: {fileID: 1795125043}
   m_Layer: 5
   m_Name: VolumeSettingsPanel
   m_TagString: Untagged
@@ -15194,23 +15280,6 @@ RectTransform:
   m_AnchoredPosition: {x: -260.84937, y: 0.6137085}
   m_SizeDelta: {x: -288.6417, y: 109.0219}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1795125040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1795125038}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 969d1a5ec653e4220b2793f2cb63bebe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BaseSettingsPanel
-  title: {fileID: 1455682917}
-  settingsPanel: {fileID: 760722125}
-  mainMenu: {fileID: 1191962524}
-  selectLevel: {fileID: 1608459832}
-  selectedObjectManager: {fileID: 1697526965}
 --- !u!114 &1795125041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15249,6 +15318,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1795125038}
   m_CullTransparentMesh: 1
+--- !u!114 &1795125043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1795125038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42a89ffb3e12b694885d0005927b806d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VolumeSettingPanel
+  volumeSettingsPanel: {fileID: 1795125038}
+  selectedObjectManager: {fileID: 1697526965}
 --- !u!114 &1815478871 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5298276250961545819, guid: d256b2fd37073c345a9dc9edef8395e1, type: 3}
@@ -15855,8 +15938,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1708224882}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.6, y: 0}
+  m_AnchorMax: {x: 0.6, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -16981,7 +17064,7 @@ PrefabInstance:
     - target: {fileID: 4777581208187543812, guid: d256b2fd37073c345a9dc9edef8395e1, type: 3}
       propertyPath: baseSettingsPanel
       value: 
-      objectReference: {fileID: 1795125040}
+      objectReference: {fileID: 0}
     - target: {fileID: 4777581208187543812, guid: d256b2fd37073c345a9dc9edef8395e1, type: 3}
       propertyPath: selectedObjectManager
       value: 
@@ -16993,7 +17076,7 @@ PrefabInstance:
     - target: {fileID: 5181317793222800749, guid: d256b2fd37073c345a9dc9edef8395e1, type: 3}
       propertyPath: baseSettingsPanel
       value: 
-      objectReference: {fileID: 1795125040}
+      objectReference: {fileID: 0}
     - target: {fileID: 5181317793222800749, guid: d256b2fd37073c345a9dc9edef8395e1, type: 3}
       propertyPath: selectedObjectManager
       value: 
@@ -17482,7 +17565,7 @@ PrefabInstance:
     - target: {fileID: 1014147066965353450, guid: 15e26c5348637314098e8b1780e0cfeb, type: 3}
       propertyPath: baseSettingsPanel
       value: 
-      objectReference: {fileID: 1795125040}
+      objectReference: {fileID: 0}
     - target: {fileID: 1014147066965353450, guid: 15e26c5348637314098e8b1780e0cfeb, type: 3}
       propertyPath: selectedObjectManager
       value: 
@@ -17690,7 +17773,7 @@ PrefabInstance:
     - target: {fileID: 6770674319539771916, guid: 15e26c5348637314098e8b1780e0cfeb, type: 3}
       propertyPath: baseSettingsPanel
       value: 
-      objectReference: {fileID: 1795125040}
+      objectReference: {fileID: 0}
     - target: {fileID: 6770674319539771916, guid: 15e26c5348637314098e8b1780e0cfeb, type: 3}
       propertyPath: selectedObjectManager
       value: 
@@ -18133,7 +18216,7 @@ MonoBehaviour:
     m_SelectOnUp: {fileID: 660662989}
     m_SelectOnDown: {fileID: 197177060}
     m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnRight: {fileID: 439164981}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -22210,6 +22293,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3719258236215667810, guid: da068f43a3264ff4892e1c249b76d23e, type: 3}
+      propertyPath: volumeCanvasUI
+      value: 
+      objectReference: {fileID: 304461924}
     - target: {fileID: 3719258236215667810, guid: da068f43a3264ff4892e1c249b76d23e, type: 3}
       propertyPath: settingsCanvasUI
       value: 

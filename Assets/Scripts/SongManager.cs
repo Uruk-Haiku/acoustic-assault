@@ -189,6 +189,35 @@ public class SongManager : MonoBehaviour
         GameManager.LoadScene("MenuScreen");
     }
 
+    public void ReturnToMainMenuByButton()
+    {
+        isLevelFinished = true;
+        GameManager.Instance.canvasObj.SetActive(false);
+        // turn off song
+        audioSourceBackingTrack.Stop();
+        // turn on sound
+        audioSourceSfx.Play();
+        // switchCamera
+        GameManager.Instance.mainCamera.SetActive(false);
+        GameManager.Instance.winLoseCamera.SetActive(true);
+
+        GameManager.Instance.greenIdle.SetActive(false);
+        GameManager.Instance.pinkIdle.SetActive(false);
+        StartCoroutine(ExitToMainMenuFast());
+    }
+
+    IEnumerator ExitToMainMenuFast()
+    {
+        yield return new WaitForSeconds(1);
+        audioSourceSfx.Stop();
+        isPlayingSong = false;
+        damageCalculator.startRecording = false;
+        songTime = 0;
+        timeStampIndex = 0;
+        SongManager.Instance.EndSong();
+        GameManager.LoadScene("MenuScreen");
+    }
+
     public void PlayBackingTrack(string song, float delay)
     {
         AudioClip clip = Resources.Load<AudioClip>($"Music/Songs/{song}/{song}Backing");
