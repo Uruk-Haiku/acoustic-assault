@@ -134,6 +134,7 @@ public class SongManager : MonoBehaviour
 
             if (!isLevelFinished && (timeStampIndex >= timeStamps.Length || damageCalculator.isGameOver))
             {
+                Debug.Log("HOLY FINISHED");
                 isLevelFinished = true;
                 GameManager.Instance.canvasObj.SetActive(false);
                 int winResult = damageCalculator.gameEndState;
@@ -240,13 +241,13 @@ public class SongManager : MonoBehaviour
         string song = "";
         if (levelNum == 1)
         {
-            songTime = -0.2f; // artificial lag synchronizer
+            songTime = -0.1f; // artificial lag synchronizer
             timeStamps = timeStamps1;
             song = "IWantItThatWay";
         }
         else if (levelNum == 2)
         {
-            songTime = -0.3f; // artificial lag synchronizer
+            songTime = 0f; // artificial lag synchronizer
             timeStamps = timeStamps2;
             song = "AllIWantForChristmas";
         }

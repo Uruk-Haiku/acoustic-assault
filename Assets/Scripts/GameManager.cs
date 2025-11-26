@@ -214,7 +214,7 @@ public class GameManager : MonoBehaviour
             if (GetCurrentTutorialStage() == 13)
             {
                 // Super not extendible will fix later if we work on this in future
-                SongManager.Instance.PlayBackingTrack("MaryHadALittleLamb", 1.9f);
+                SongManager.Instance.PlayBackingTrack("MaryHadALittleLamb", 1.8f);
             }
 
             if (autoAdvanceStages.Contains(GetCurrentTutorialStage()))
