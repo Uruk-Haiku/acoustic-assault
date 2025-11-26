@@ -13702,6 +13702,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SfxManager
   sfxSource: {fileID: 0}
+  sfxGroup: {fileID: 5893890922112666734, guid: d2238b38b2a38c84cb571be6d75b5ff9, type: 2}
 --- !u!1 &1707624383
 GameObject:
   m_ObjectHideFlags: 0
@@ -23738,6 +23739,7 @@ GameObject:
   - component: {fileID: 5887718710261591345}
   - component: {fileID: 7007843946259744945}
   - component: {fileID: 5555373828716518804}
+  - component: {fileID: 7007843946259744946}
   m_Layer: 5
   m_Name: ExitSettingsButton
   m_TagString: Untagged
@@ -23950,6 +23952,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7007843946259744946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6604330809873727467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33297b7a7a240104e9ab0185929bc5c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIAudioButton
+  clickClip: {fileID: 8300000, guid: 5c16cfb32b94ca74986be82baa0dfb5d, type: 3}
+  volume: 0.5
 --- !u!1 &7081805558409030669
 GameObject:
   m_ObjectHideFlags: 0

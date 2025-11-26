@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class SfxManager : MonoBehaviour
 {
     public static SfxManager Instance { get; private set; }
 
     [SerializeField] private AudioSource sfxSource;
+
+    public AudioMixerGroup sfxGroup;
 
     private void Awake()
     {
@@ -20,6 +23,7 @@ public class SfxManager : MonoBehaviour
         if (sfxSource == null)
             sfxSource = gameObject.AddComponent<AudioSource>();
 
+        sfxSource.outputAudioMixerGroup = sfxGroup;
         sfxSource.playOnAwake = false;
         sfxSource.loop = false;
     }
