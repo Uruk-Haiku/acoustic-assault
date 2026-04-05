@@ -107,7 +107,7 @@ public class SelectedObjectManager : MonoBehaviour
 
         Debug.Log("Selecting button: " + selectedButton.name);
 
-        if (selectedButton != fs_MainMenu || selectedButton != fs_SelectLevel || selectedButton != fs_BaseSettings) 
+        if (selectedButton != fs_MainMenu && selectedButton != fs_SelectLevel && selectedButton != fs_BaseSettings)
         {
             yield return null;
         }

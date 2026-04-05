@@ -184,8 +184,10 @@ public class SongManager : MonoBehaviour
         audioSourceSfx.Stop();
         isPlayingSong = false;
         damageCalculator.startRecording = false;
+        damageCalculator.StopAllCoroutines();
         songTime = 0;
         timeStampIndex = 0;
+        currentPlayer = 1;
         SongManager.Instance.EndSong();
         GameManager.LoadScene("MenuScreen");
     }
@@ -213,8 +215,10 @@ public class SongManager : MonoBehaviour
         audioSourceSfx.Stop();
         isPlayingSong = false;
         damageCalculator.startRecording = false;
+        damageCalculator.StopAllCoroutines();
         songTime = 0;
         timeStampIndex = 0;
+        currentPlayer = 1;
         SongManager.Instance.EndSong();
         GameManager.LoadScene("MenuScreen");
     }
@@ -236,6 +240,7 @@ public class SongManager : MonoBehaviour
     {
         songTime = 0;
         timeStampIndex = 0;
+        currentPlayer = 1;
         isPlayingSong = true;
         
         string song = "";
@@ -289,16 +294,10 @@ public class SongManager : MonoBehaviour
         karaokeManager.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
         damageCalculator.pitchDetector = GameManager.GetPitchDetection(currentPlayer - 1);
 
-        for (int i = 0; i < 2; i++)
-        {
-            currentEmotionList.Add(EmotionScore.Good);
-            emotionScoreList.Add(0);
-            timeToGetPerfectScoreList.Add(0);
-        }
-
-
-        print(currentPlayer - 1);
-        print(timeToGetPerfectScoreList.Count);
+        // Reset lists for fresh song (instead of appending, which causes unbounded growth)
+        currentEmotionList = new List<EmotionScore> { EmotionScore.Good, EmotionScore.Good };
+        emotionScoreList = new List<float> { 0f, 0f };
+        timeToGetPerfectScoreList = new List<float> { 0f, 0f };
 
         // Init values for first player
         timeToGetPerfectScoreList[0] = timeStamps[timeStampIndex];

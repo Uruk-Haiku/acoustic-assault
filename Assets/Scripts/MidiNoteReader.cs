@@ -45,10 +45,14 @@ public static class MidiNoteReader
         
         try
         {
-            
-            // Read the MIDI file from Assets/MidiFiles/
-            string path = Path.Combine(Application.streamingAssetsPath, "Songs", song, $"{song}.mid"); ;
-            var midiFile = MidiFile.Read(path);
+            // Load MIDI as binary from Resources (files stored as .bytes so Unity treats them as TextAsset)
+            TextAsset midiAsset = Resources.Load<TextAsset>($"Music/Songs/{song}/{song}");
+            if (midiAsset == null)
+            {
+                Debug.LogError($"MIDI file not found at Resources/Music/Songs/{song}/{song}.bytes");
+                return new MidiSong { name = song, length = 0f, bpm = 120f, notes = noteDataList };
+            }
+            var midiFile = MidiFile.Read(new MemoryStream(midiAsset.bytes));
             
             // Get tempo map for accurate time conversion
             var tempoMap = midiFile.GetTempoMap();
@@ -175,8 +179,12 @@ public static class MidiNoteReader
     /// </summary>
     public static NoteData? GetNoteAtTime(List<NoteData> allNotes, float time)
     {
-        var note = allNotes.FirstOrDefault(n => time >= n.start && time < n.end);
-        return note.note != 0 || note.start != 0 ? (NoteData?)note : null;
+        foreach (var n in allNotes)
+        {
+            if (time >= n.start && time < n.end)
+                return n;
+        }
+        return null;
     }
     
     /// <summary>

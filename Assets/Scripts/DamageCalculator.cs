@@ -103,6 +103,7 @@ public class DamageCalculator : MonoBehaviour
 
     public void StartRecordingDamage()
     {
+        StopAllCoroutines();
         StartCoroutine(DamageRoutine());
         startRecording = true;
     }
@@ -148,7 +149,7 @@ public class DamageCalculator : MonoBehaviour
         while (true)
         {
             // Prevent bug that breaks slider UI at start of game
-            if (currentDamageSlider.value == float.NaN)
+            if (float.IsNaN(currentDamageSlider.value))
                 currentDamageSlider.value = 1.0f;
             if (Player1Singing)
             {

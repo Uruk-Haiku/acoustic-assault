@@ -32,7 +32,7 @@ namespace Lasp
         // FFT resolution for pitch detection
         [SerializeField] int resolution = 2048;
         // Pitch detection range
-        [SerializeField, Range(50, 300)] float minFrequency = 50;
+        [SerializeField, Range(30, 300)] float minFrequency = 30;
         [SerializeField, Range(200, 1500)] float maxFrequency = 1000;
         [SerializeField, Range(50, 300)] float minRange = 60; // C3 (in MIDI note number)
         [SerializeField, Range(200, 1500)] float maxRange = 72; // C4 in MIDI note number
@@ -40,7 +40,7 @@ namespace Lasp
         [SerializeField] public int songSpecificOffsetInSemitones = 0;
 
         // Peak detection parameters
-        [SerializeField, Range(0.01f, 1f)] float threshold = 0.90f;
+        [SerializeField, Range(0.01f, 1f)] float threshold = 0.75f;
 
         // Manual input gain (only used when auto gain is off)
         [SerializeField, Range(-10, 120)] public float gain = 15;

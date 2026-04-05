@@ -11,8 +11,8 @@ public class DeviceSelectionPopulator : MonoBehaviour
     class DeviceItem : TMP_Dropdown.OptionData
     {
         public string id;
-        public DeviceItem(in Lasp.DeviceDescriptor device)
-          => (text, id) = (device.Name, device.ID);
+        public DeviceItem(string displayName, string deviceId)
+          => (text, id) = (displayName, deviceId);
     }
     void Awake()
     {
@@ -29,19 +29,40 @@ public class DeviceSelectionPopulator : MonoBehaviour
         GameManager.RecreatePitchDetector(playerID);
         PitchDetector pitchDetector = GameManager.GetPitchDetection(playerID);
 
-        List<DeviceItem> deviceDict = new List<DeviceItem>();
+        // First pass: count how many times each device name appears
+        Dictionary<string, int> totalCounts = new Dictionary<string, int>();
+        foreach (var dev in Lasp.AudioSystem.InputDevices)
+        {
+            if (totalCounts.ContainsKey(dev.Name))
+                totalCounts[dev.Name]++;
+            else
+                totalCounts[dev.Name] = 1;
+        }
+
+        // Second pass: build dropdown, appending a number for duplicate names
+        Dictionary<string, int> seenCounts = new Dictionary<string, int>();
+        List<DeviceItem> deviceItems = new List<DeviceItem>();
         int tempin = 0;
 
         foreach (var dev in Lasp.AudioSystem.InputDevices)
         {
+            string displayName = dev.Name;
+            if (totalCounts[dev.Name] > 1)
+            {
+                if (!seenCounts.ContainsKey(dev.Name))
+                    seenCounts[dev.Name] = 0;
+                seenCounts[dev.Name]++;
+                displayName = $"{dev.Name} ({seenCounts[dev.Name]})";
+            }
+
             if (dev.ID == pitchDetector.deviceID)
             {
-                tempin = deviceDict.Count;
+                tempin = deviceItems.Count;
             }
-            deviceDict.Add(new DeviceItem(dev));
+            deviceItems.Add(new DeviceItem(displayName, dev.ID));
         }
 
-        deviceDropdown.options.AddRange(deviceDict);
+        deviceDropdown.options.AddRange(deviceItems);
         deviceDropdown.SetValueWithoutNotify(tempin);
 
         deviceDropdown.RefreshShownValue();
@@ -50,6 +71,28 @@ public class DeviceSelectionPopulator : MonoBehaviour
         // Get dropdown and add listener
         deviceDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
     }
+    void OnEnable()
+    {
+        // Refresh the selected index to match the current player's device
+        if (deviceDropdown == null || deviceDropdown.options.Count == 0) return;
+
+        SettingsPanel settingsPanel = GetComponentInParent<SettingsPanel>();
+        PitchDetector pitchDetector = GameManager.GetPitchDetection(settingsPanel.currentPlayer);
+        if (pitchDetector == null) return;
+
+        int selectedIndex = 0;
+        for (int i = 0; i < deviceDropdown.options.Count; i++)
+        {
+            if (((DeviceItem)deviceDropdown.options[i]).id == pitchDetector.deviceID)
+            {
+                selectedIndex = i;
+                break;
+            }
+        }
+        deviceDropdown.SetValueWithoutNotify(selectedIndex);
+        deviceDropdown.RefreshShownValue();
+    }
+
     public void OnDropdownValueChanged(int value)
     {
         SettingsPanel settingsPanel = GetComponentInParent<SettingsPanel>();
@@ -69,7 +112,7 @@ public class DeviceSelectionPopulator : MonoBehaviour
         pitchDetector.TrySelectDevice(selectedOption.id);
         deviceDropdown.RefreshShownValue();
     }
-    
+
     void OnDestroy()
     {
         // Clean up the listener when destroyed

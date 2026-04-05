@@ -33,7 +33,10 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
     private float cursorMusicOffset;
 
-    private List<GameObject> instantiatedNotes = new List<GameObject>();
+    // Object pool for note GameObjects (avoids Instantiate/Destroy every frame)
+    private List<GameObject> notePool = new List<GameObject>();
+    private int activeNoteCount = 0;
+    private const int INITIAL_POOL_SIZE = 30;
 
     private Dictionary<int, float> midiToY = new Dictionary<int, float>();
     
@@ -164,8 +167,26 @@ public class KaraokeBoxUIManager : MonoBehaviour
         cursorRectTransform = Cursor.GetComponent<RectTransform>();
         lyricsRectTransform = lyricsText.GetComponent<RectTransform>();
 
-        // GameManager uses 0 indexing for players
-        // TODO ideally we should refactor to initialize karaoke manager (and other sub managers) in songManager
+        // Pre-instantiate note pool
+        for (int i = 0; i < INITIAL_POOL_SIZE; i++)
+        {
+            GameObject noteObj = Instantiate(QuarterNote, rectTransform);
+            noteObj.SetActive(false);
+            notePool.Add(noteObj);
+        }
+    }
+
+    private GameObject GetPooledNote()
+    {
+        // Reuse an inactive note from the pool
+        if (activeNoteCount < notePool.Count)
+            return notePool[activeNoteCount];
+
+        // Pool exhausted — grow it
+        GameObject noteObj = Instantiate(QuarterNote, rectTransform);
+        noteObj.SetActive(false);
+        notePool.Add(noteObj);
+        return noteObj;
     }
 
     void Update()
@@ -180,14 +201,10 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
     void UpdateMusicUI()
     {
-        // Clear previous notes
-        foreach (var noteObj in instantiatedNotes)
-        {
-            Destroy(noteObj);
-        }
-
-        instantiatedNotes.Clear();
-
+        // Hide all previously active notes
+        for (int i = 0; i < activeNoteCount; i++)
+            notePool[i].SetActive(false);
+        activeNoteCount = 0;
 
         // This is the x offset since the cursor is not directly at the start of the karaoke box
         // This is basically how many pixels the cursor image is off from the left most border
@@ -197,9 +214,9 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
         // This is so that the notes that are technically "done" still show up after they pass the cursor.
         // We want they notes to stay alive until they hit the left most side of the box, not after they pass the cursor
-        // We estimate that the distance between the left box border and the cursor is roughly 
+        // We estimate that the distance between the left box border and the cursor is roughly
         // cursorOffset / boxWidth * barDuration
-        cursorMusicOffset = cursorOffset / 800 * barDuration; 
+        cursorMusicOffset = cursorOffset / 800 * barDuration;
 
         // We make sure that the range we get includes the cursorMusicOffset
         List<MidiNoteReader.NoteData> currentNotes = MidiNoteReader.GetNotesInTimeRange(
@@ -207,6 +224,11 @@ public class KaraokeBoxUIManager : MonoBehaviour
 
         float tStartLyrics = (timeBeforeSongStarts - SongManager.Instance.songTime) / barDuration;
         lyricsRectTransform.anchoredPosition = new Vector2(-389.5f + tStartLyrics * 800f + cursorOffset, lyricsRectTransform.anchoredPosition.y);
+
+        // Get the base dimensions from the prefab (same for all notes)
+        RectTransform prefabRect = QuarterNote.GetComponent<RectTransform>();
+        float baseNoteWidth = prefabRect.rect.width;
+        float baseNoteX = prefabRect.anchoredPosition.x;
 
         foreach (var note in currentNotes)
         {
@@ -216,21 +238,22 @@ public class KaraokeBoxUIManager : MonoBehaviour
             float xStart = tStart * 800f + cursorOffset;
             float yOffset = midiToY[note.note];
 
-            GameObject noteObj = Instantiate(QuarterNote, rectTransform);
+            GameObject noteObj = GetPooledNote();
+            noteObj.SetActive(true);
+            activeNoteCount++;
+
             int currentPlayer = SongManager.Instance.GetPlayerFromTime(note.start);
             noteObj.GetComponent<Image>().color = playerColors[currentPlayer];
             noteObj.transform.SetSiblingIndex(FirstChild.transform.GetSiblingIndex());
 
-            // TODO in future pre-instantiate quarter notes for efficiency
             RectTransform noteRectTransform = noteObj.GetComponent<RectTransform>();
 
-            noteRectTransform.anchoredPosition = new Vector2(noteRectTransform.anchoredPosition.x + xStart, yOffset);
+            noteRectTransform.anchoredPosition = new Vector2(baseNoteX + xStart, yOffset);
 
             // Calculate note length
             float noteLengthFactor = 12f * (note.end - note.start) / barDuration;
-            noteRectTransform.sizeDelta = new Vector2(noteRectTransform.rect.width * noteLengthFactor,
+            noteRectTransform.sizeDelta = new Vector2(baseNoteWidth * noteLengthFactor,
                 noteRectTransform.sizeDelta.y);
-            instantiatedNotes.Add(noteObj);
         }
     }
 

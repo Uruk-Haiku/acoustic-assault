@@ -20,34 +20,35 @@ public class SettingsManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        // Check if a tutorial popup is currently blocking input
+        bool tutorialPopupActive = GameManager.Instance != null
+            && GameManager.Instance.currentTutorialPopup != null;
+        int tutorialStage = GameManager.GetCurrentTutorialStage();
+
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.JoystickButton2))
         {
-            ToggleSettingsForPlayer(0);
+            // Allow if settings already open (to close them), or no tutorial popup, or tutorial stage 2
+            bool canToggle = settingsCanvasUI.activeSelf
+                || !tutorialPopupActive || tutorialStage == 2;
+            if (canToggle && !volumeCanvasUI.activeSelf)
+                ToggleSettingsForPlayer(0);
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.JoystickButton3))
         {
-            ToggleSettingsForPlayer(1);
+            bool canToggle = settingsCanvasUI.activeSelf
+                || !tutorialPopupActive || tutorialStage == 4;
+            if (canToggle && !volumeCanvasUI.activeSelf)
+                ToggleSettingsForPlayer(1);
         }
 
-        if (Input.GetKeyDown(KeyCode.JoystickButton2))
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7))
         {
-            ToggleSettingsForPlayer(0);
-        }
-
-        if (Input.GetKeyDown(KeyCode.JoystickButton3))
-        {
-            ToggleSettingsForPlayer(1);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            ToggleVolumeSetting();
-        }
-
-        if (Input.GetKeyDown(KeyCode.JoystickButton7))
-        {
-            ToggleVolumeSetting();
+            // Allow closing volume (already open), but block opening if tutorial popup or settings are active
+            bool canToggle = volumeCanvasUI.activeSelf
+                || (!tutorialPopupActive && !settingsCanvasUI.activeSelf);
+            if (canToggle)
+                ToggleVolumeSetting();
         }
     }
     public void ToggleSettingsForPlayer(int playerID)
