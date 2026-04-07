@@ -261,16 +261,17 @@ public class KaraokeBoxUIManager : MonoBehaviour
     {
         float pitch = pitchDetector.offsetDisplayPitch;
 
-        // Clamp frequency to UI range
-        float pitch_clamped = Mathf.Clamp(pitch, UIBotFrequency, UITopFrequency);
-
         // Logarithmic normalization (base 2 for octaves)
-        float logPitch = Mathf.Log(pitch_clamped / UIBotFrequency, 2); // distance in octaves from bottom
+        float logPitch = Mathf.Log(pitch / UIBotFrequency, 2); // distance in octaves from bottom
         float logRange = Mathf.Log(UITopFrequency / UIBotFrequency, 2); // total range in octaves
         float pitch_normalized = logPitch / logRange;
 
+        // Allow cursor to exceed box by 1 whole note (2 semitones) above and below
+        float oneNoteOvershoot = (2f / 12f) / logRange;
+        float pitch_clamped = Mathf.Clamp(pitch_normalized, -oneNoteOvershoot, 1f + oneNoteOvershoot);
+
         // Now linear interpolate in UI space
-        cursorRectTransform.pivot = new Vector2(0, pitch_normalized);
+        cursorRectTransform.pivot = new Vector2(0, pitch_clamped);
         // float yPos = Mathf.Lerp(-214.4f, -116f, pitch_normalized);
         // cursorRectTransform.anchoredPosition = new Vector2(cursorRectTransform.anchoredPosition.x, yPos);
     }

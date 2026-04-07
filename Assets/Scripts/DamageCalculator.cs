@@ -34,8 +34,8 @@ public class DamageCalculator : MonoBehaviour
     // Maximum loudness multiplier to multiply damage by
     [SerializeField] private float loudnessMultiplier = 2.0f;
     // Minimum and maximum loudness in dB for normalization
-    [SerializeField] private float minLoudnessDb = -40f;
-    [SerializeField] private float maxLoudnessDb = 0f;
+    [SerializeField] private float minLoudnessDb = -10f;
+    [SerializeField] private float maxLoudnessDb = 10f;
 
     [Header("Parameters")]
     // Tolerance factor for frequency matching, the higher the more tolerance
@@ -66,7 +66,7 @@ public class DamageCalculator : MonoBehaviour
     [SerializeField] private float damageCalculationInterval = 0.05f;
 
     // Multiplier to apply to damage effect on health
-    [SerializeField] private float damageEffectMultiplier = 0.3f;
+    [SerializeField] private float damageEffectMultiplier = 4f;
 
     // Frequency of the note that is playing
     private float currentTargetFrequency = 0f;
@@ -209,8 +209,9 @@ public class DamageCalculator : MonoBehaviour
         minLoudnessDb = -pitchDetector.dynamicRange;
         // Clamp loudness between -minLoudnessDB and maxLoudnessdB, then normalize to 0-1 range
         float normalizedLoudness = Mathf.InverseLerp(minLoudnessDb, maxLoudnessDb, loudness);
+        Debug.Log($"Loudness: raw={loudness:F1}dB, normalized={normalizedLoudness:F3}, damage={damage:F1}");
         // Changed formula to make loudness more apparent in slider
-        return damage * MathF.Pow((1 + normalizedLoudness), 2.5f) * loudnessMultiplier;
+        return damage * MathF.Pow((normalizedLoudness), 7f) * loudnessMultiplier;
     }
     #endregion
 

@@ -1640,8 +1640,8 @@ MonoBehaviour:
   damageBar2: {fileID: 1364297224}
   applyLoundness: 1
   loudnessMultiplier: 2
-  minLoudnessDb: -40
-  maxLoudnessDb: 0
+  minLoudnessDb: -10
+  maxLoudnessDb: 10
   frequencyToleranceFactor: 2
   maxDamageMultiplier: 1
   timeLength: 15
@@ -1651,7 +1651,7 @@ MonoBehaviour:
   isGameOver: 0
   gameEndState: 0
   damageCalculationInterval: 0.05
-  damageEffectMultiplier: 0.3
+  damageEffectMultiplier: 3
   startRecording: 0
 --- !u!4 &367704543
 Transform:

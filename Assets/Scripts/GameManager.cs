@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using Lasp;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
@@ -207,7 +208,12 @@ public class GameManager : MonoBehaviour
         {
             Instance.currentTutorialPopup.SetActive(false);
             Instance.currentTutorialPopup = null;
-            UnPauseGame();
+            bool settingsOpen = Instance.settingsCanvasUI != null && Instance.settingsCanvasUI.activeSelf;
+            bool volumeOpen = Instance.volumeCanvasUI != null && Instance.volumeCanvasUI.activeSelf;
+            if (!settingsOpen && !volumeOpen)
+            {
+                UnPauseGame();
+            }
 
             int[] autoAdvanceStages = { 0, 1, 2, 5, 7, 8, 10, 11, 14, 15 };
 
@@ -342,6 +348,15 @@ public class GameManager : MonoBehaviour
             Transform panelTransform = tutorialCanvas.transform.Find("panel" + currentStage);
             panelTransform.gameObject.SetActive(true);
             currentTutorialPopup = panelTransform.gameObject;
+
+            // Select the panel's button for controller support
+            Button panelButton = panelTransform.GetComponentInChildren<Button>(true);
+            if (panelButton != null)
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+                EventSystem.current.SetSelectedGameObject(panelButton.gameObject);
+            }
+
             nextStage += 1;
             PauseGame();
         }
